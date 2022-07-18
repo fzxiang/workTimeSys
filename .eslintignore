@@ -1,0 +1,7 @@
+node_mudules
+dist 
+dist.zip
+
+vite.config.ts
+*.d.ts
+.*.js
