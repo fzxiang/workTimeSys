@@ -5,7 +5,7 @@
         <div class="pullup-content">
           <div class="pullup-list">
             <van-swipe-cell v-for="(item, index) in formData" :key="index">
-              <van-cell-group :inset="true" style="margin-top: 10px">
+              <van-cell-group :inset="true">
                 <van-field
                   v-model="item.project_name"
                   is-link
@@ -86,7 +86,7 @@ import PullDown from '@better-scroll/pull-down'
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 const pullRefreshStyle = ref({
-  height: window.innerHeight - 130 - 64 + 'px',
+  height: window.innerHeight - 180 - 64 + 'px',
   background: '#eee',
 })
 const scroll = ref()
@@ -105,6 +105,8 @@ onMounted(() => {
   bscroll.value.on('pullingDown', pullingDownHandler)
   bscroll.value.on('scroll', scrollHandler)
   bscroll.value.on('scrollEnd', (e) => {
+    bscroll.value.refresh()
+    bscroll.value.finishPullDown()
     console.log('scrollEnd', e)
   })
   // bscroll.value.on('scroll', pullingHandler)
@@ -143,13 +145,12 @@ function ajaxGet(/* url */) {
   })
 }
 
-
 /**
  * 表单
  * **/
 interface FormData {
-  project: any
-  project_name: any
+  project: number
+  project_name: string
   time: number
 }
 const formData = ref<[FormData]>([
@@ -168,7 +169,7 @@ const columns = [
   { text: '混合云', value: 5 },
 ]
 const selectedIndex = ref(0)
-const selectedValues = ref([])
+const selectedValues = ref<[number]>([0])
 const onConfirm = (obj: PickerConfirmEventParams) => {
   const { selectedOptions } = obj
   formData.value[selectedIndex.value].project = selectedOptions[0]?.value
@@ -177,8 +178,9 @@ const onConfirm = (obj: PickerConfirmEventParams) => {
 }
 //
 function handleShowPicker(index: number) {
+  const value = formData.value[index]?.project
   showPicker.value = true
-  selectedValues.value.splice(0, 1, formData.value[index].project)
+  selectedValues.value = [value]
   selectedIndex.value = index
 }
 // 提交
@@ -243,8 +245,13 @@ function handleSlider(index: number, value: number) {
 }
 .bottom-btn {
   margin: 15px;
-  margin-bottom: 0;
 }
+.van-cell-group {
+  margin-top: 10px;
+}
+//.van-cell-group:last-child {
+//  margin-bottom: 10px;
+//}
 .pullup {
   .pullup-wrapper {
     overflow: hidden;

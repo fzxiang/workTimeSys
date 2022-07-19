@@ -2,11 +2,11 @@
   <van-calendar
     title="工时日历"
     ref="calendarRef"
-    :show-title="false"
+    :show-title="true"
     :poppable="false"
     :show-confirm="false"
     :show-mark="false"
-    :style="{ height: '130px' }"
+    :style="{ height: '180px' }"
     :min-date="minData"
     color="#1e80ff"
     :formatter="formatter"
@@ -14,8 +14,8 @@
     <template #bottom-info="scoped">
       <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
     </template>
-    <template #subtitle="scoped">
-      {{ scoped }}
+    <template #title>
+      <div>日历日历日历日历</div>
     </template>
   </van-calendar>
 </template>
