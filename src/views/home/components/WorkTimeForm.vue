@@ -54,7 +54,7 @@
 
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
-        v-model="formData[selectedIndex].project"
+        v-model="selectedValues"
         :columns="columns"
         @confirm="onConfirm"
         @cancel="showPicker = false"
@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { ref, onMounted, unref } from 'vue'
 import { Toast } from 'vant'
-import type { PickerProps, PickerColumn, PickerOption, PullRefreshProps } from 'vant'
+import type { PickerConfirmEventParams, PickerProps, PickerColumn, PickerOption, PullRefreshProps } from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'
@@ -142,19 +142,7 @@ function ajaxGet(/* url */) {
     }, 1000)
   })
 }
-// console.log(pullRefreshStyle)
-// const count = ref(0);
-// const loading = ref(false);
-// const onRefresh = () => {
-//   setTimeout(() => {
-//     Toast('刷新成功');
-//     loading.value = false;
-//     count.value++;
-//   }, 1000);
-// };
-// const onChange = (pullProps: PullRefreshProps) => {
-//   console.log(pullProps)
-// }
+
 
 /**
  * 表单
@@ -180,13 +168,19 @@ const columns = [
   { text: '混合云', value: 5 },
 ]
 const selectedIndex = ref(0)
-
-const onConfirm = (obj: any) => {
-  formData.value[selectedIndex.value].project = obj.value
-  formData.value[selectedIndex.value].project_name = obj.text
+const selectedValues = ref([])
+const onConfirm = (obj: PickerConfirmEventParams) => {
+  const { selectedOptions } = obj
+  formData.value[selectedIndex.value].project = selectedOptions[0]?.value
+  formData.value[selectedIndex.value].project_name = selectedOptions[0]?.text
   showPicker.value = false
 }
-
+//
+function handleShowPicker(index: number) {
+  showPicker.value = true
+  selectedValues.value.splice(0, 1, formData.value[index].project)
+  selectedIndex.value = index
+}
 // 提交
 const onSubmit = () => {
   Toast('表单提交')
@@ -213,35 +207,30 @@ function handleDelete(index: number) {
   finishPull()
   console.log(index)
 }
-//
-function handleShowPicker(index: number) {
-  showPicker.value = true
-  selectedIndex.value = index
-}
 
 function handleSlider(index: number, value: number) {
-  const data = unref(formData)
-  if (data.length > 1) {
-    let total = 0
-    data.forEach((item) => {
-      total += item.time
-    })
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].time > 0) {
-        if (i !== index) {
-          data[i].time = data[i].time + (100 - total)
-          return false
-        }
-      }
-    }
-    formData.value.every((item, idx) => {
-      if (idx !== index && item.time !== 0) {
-        item.time = item.time - 5
-        return false
-      }
-    })
-  }
+  // const data = unref(formData)
+  // if (data.length > 1) {
+  //   let total = 0
+  //   data.forEach((item) => {
+  //     total += item.time
+  //   })
+  //
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (data[i].time > 0) {
+  //       if (i !== index) {
+  //         data[i].time = data[i].time + (100 - total)
+  //         return false
+  //       }
+  //     }
+  //   }
+  //   formData.value.every((item, idx) => {
+  //     if (idx !== index && item.time !== 0) {
+  //       item.time = item.time - 5
+  //       return false
+  //     }
+  //   })
+  // }
 }
 </script>
 

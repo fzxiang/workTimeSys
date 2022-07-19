@@ -1,6 +1,7 @@
 <template>
- <van-calendar
+  <van-calendar
     title="工时日历"
+    ref="calendarRef"
     :show-title="false"
     :poppable="false"
     :show-confirm="false"
@@ -13,20 +14,21 @@
     <template #bottom-info="scoped">
       <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
     </template>
+    <template #subtitle="scoped">
+      {{ scoped }}
+    </template>
   </van-calendar>
 </template>
-
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-import { Toast } from "vant";
-import { useScrollParent, useEventListener } from '@vant/use';
-import type {
-  CalendarDayItem,
-  PullRefreshProps,
-} from 'vant';
+import { Toast } from 'vant'
+import { useScrollParent, useEventListener } from '@vant/use'
+import type { CalendarDayItem, PullRefreshProps } from 'vant'
 
+const calendarRef = ref()
+console.log(calendarRef)
 const today = dayjs()
 const minData = new Date(2022, 0)
 
@@ -39,17 +41,16 @@ const minData = new Date(2022, 0)
 //   { target:  useScrollParent(calendarRef.value?.querySelector('.van-calendar__body')) }
 // );
 
-function formatter (day: any) {
-  const month = day.date.getMonth() + 1;
+function formatter(day: any) {
+  const month = day.date.getMonth() + 1
   // const date = day.date.getDate();
   const { date } = day
   if (date.getDay() === 0 || date.getDay() === 6) {
     day.className = 'gray-color'
-    day.bottomInfo = '';
-
+    day.bottomInfo = ''
   }
   if (dayjs(date).isSame(today, 'day')) {
-    day.text = '今天';
+    day.text = '今天'
   }
 
   // if (month === 5) {
@@ -69,37 +70,34 @@ function formatter (day: any) {
   //   day.bottomInfo = '离店';
   // }
 
-  return day;
-};
+  return day
+}
 
 // 填写状态
 function handleFillStatus(scoped: CalendarDayItem) {
   const { date } = scoped
   let res = ''
-  if(dayjs(date).isAfter(today, 'day')) {
+  if (dayjs(date).isAfter(today, 'day')) {
     res = 'van-badge-status-none'
   }
-  // 已填写 
-  else if(false){
+  // 已填写
+  else if (false) {
   }
-  // 未填写 
+  // 未填写
   else {
-
-  } 
+  }
   return res
 }
-
-
 </script>
 
 <style lang="less" scoped>
- :deep(.van-calendar__selected-day)  {
-    border-radius: 50%;
-  }
-  :deep(.van-calendar__bottom-info) {
-    bottom: 12px;
-  }
-  :deep(.van-calendar__body) {
-    overflow: hidden;
-  }
+:deep(.van-calendar__selected-day) {
+  border-radius: 50%;
+}
+:deep(.van-calendar__bottom-info) {
+  bottom: 12px;
+}
+:deep(.van-calendar__body) {
+  overflow: hidden;
+}
 </style>
