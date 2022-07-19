@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     // not needed for vue 3
-    'vue/no-multiple-template-root': 'off'
+    'vue/no-multiple-template-root': 'off',
+    'vue/no-v-model-argument': 'off',
   }
 };

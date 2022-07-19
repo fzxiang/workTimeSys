@@ -1,32 +1,56 @@
 <template>
   <van-form @submit="onSubmit">
-    <van-pull-refresh v-model="loading" @refresh="onRefresh" @change="onChange"  :style="pullRefreshStyle">
-      <van-swipe-cell v-for="(item, index) in formData" :key="index" >
-        <van-cell-group :inset="true" style="margin-top: 15px">
-          <van-field
-            v-model="item.project_name"
-            is-link
-            readonly
-            name="project"
-            label="项目"
-            placeholder="点击选择项目"
-            @click="handleShowPicker(index)"
-          />
-          <van-field name="slider" label="工时">
-            <template #input>
-              <van-slider v-model="item.time" step="5" style="margin-right: 20px" @update:model-value="handleSlider(index, item.time)">
-                <template #button>
-                  <van-button type="primary" size="mini" round style="width: 40px">{{ item.time }}%</van-button>
-                </template>
-              </van-slider>
-            </template>
-          </van-field>
-        </van-cell-group>
-        <template #right>
-          <van-button square type="danger" text="删除" class="delete-button" @click="handleDelete(index)"/>
-        </template>
-      </van-swipe-cell>
-    </van-pull-refresh>
+    <div class="pullup" :style="pullRefreshStyle">
+      <div ref="scroll" class="pullup-wrapper" :style="pullRefreshStyle">
+        <div class="pullup-content">
+          <div class="pullup-list">
+            <van-swipe-cell v-for="(item, index) in formData" :key="index">
+              <van-cell-group :inset="true" style="margin-top: 10px">
+                <van-field
+                  v-model="item.project_name"
+                  is-link
+                  readonly
+                  name="project"
+                  label="项目"
+                  placeholder="点击选择项目"
+                  @click="handleShowPicker(index)"
+                />
+                <van-field name="slider" label="工时">
+                  <template #input>
+                    <van-slider
+                      v-model="item.time"
+                      step="5"
+                      style="margin-right: 20px"
+                      @update:model-value="handleSlider(index, item.time)"
+                    >
+                      <template #button>
+                        <van-button type="primary" size="mini" round style="width: 40px"
+                          >{{ item.time }}%</van-button
+                        >
+                      </template>
+                    </van-slider>
+                  </template>
+                </van-field>
+              </van-cell-group>
+              <template #right>
+                <van-button
+                  square
+                  type="danger"
+                  text="删除"
+                  class="delete-button"
+                  @click="handleDelete(index)"
+                />
+              </template>
+            </van-swipe-cell>
+          </div>
+          <!-- <div class="pullup-tips">
+            <div v-if="isPulling" class="after-trigger">
+              <span class="pullup-txt">加载中...</span>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
 
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
@@ -36,59 +60,108 @@
         @cancel="showPicker = false"
       />
     </van-popup>
-    <van-row gutter="20" style="margin: 15px; margin-top: 15px">
+    <van-row gutter="20" class="bottom-btn">
       <van-col span="12">
-          <van-button round block plain type="primary" @click="handleAdd">
-          新增项目
-        </van-button>
+        <van-button round block plain type="primary" @click="handleAdd"> 新增项目 </van-button>
       </van-col>
       <van-col span="12">
-        <van-button round block type="primary" native-type="submit">
-          提交
-        </van-button>
+        <van-button round block type="primary" native-type="submit"> 提交 </van-button>
       </van-col>
     </van-row>
   </van-form>
 </template>
 
-
 <script setup lang="ts">
-import { ref , unref} from 'vue'
-import { Toast } from "vant";
-import type {
-  PickerProps,
-  PickerColumn,
-  PickerOption,
-  PullRefreshProps
-} from 'vant';
-
+import { ref, onMounted, unref } from 'vue'
+import { Toast } from 'vant'
+import type { PickerProps, PickerColumn, PickerOption, PullRefreshProps } from 'vant'
+import BScroll from '@better-scroll/core'
+import MouseWheel from '@better-scroll/mouse-wheel'
+import PullDown from '@better-scroll/pull-down'
 
 /**
  * 下拉刷新
  * **/
-const pullRefreshStyle = {
-  'min-height': window.innerHeight + 'px'
+
+BScroll.use(MouseWheel)
+BScroll.use(PullDown)
+const pullRefreshStyle = ref({
+  height: window.innerHeight - 130 - 64 + 'px',
+  background: '#eee',
+})
+const scroll = ref()
+const bscroll = ref()
+const isPulling = ref(false)
+onMounted(() => {
+  bscroll.value = new BScroll(scroll.value, {
+    scrollY: true,
+    bounceTime: 800,
+    mouseWheel: true,
+    pullDownRefresh: {
+      threshold: 100,
+      stop: 0,
+    },
+  })
+  bscroll.value.on('pullingDown', pullingDownHandler)
+  bscroll.value.on('scroll', scrollHandler)
+  bscroll.value.on('scrollEnd', (e) => {
+    console.log('scrollEnd', e)
+  })
+  // bscroll.value.on('scroll', pullingHandler)
+})
+
+function scrollHandler(pos) {
+  // console.log(pos)
 }
-console.log(pullRefreshStyle)
-const count = ref(0);
-const loading = ref(false);
-const onRefresh = () => {
-  setTimeout(() => {
-    Toast('刷新成功');
-    loading.value = false;
-    count.value++;
-  }, 1000);
-};
-const onChange = (pullProps: PullRefreshProps) => {
-  console.log(pullProps)
+function finishPull() {
+  bscroll.value.finishPullDown()
+  bscroll.value.refresh()
 }
+function crollHandler(pos) {
+  console.log(pos.y)
+}
+async function pullingDownHandler() {
+  isPulling.value = true
+
+  // await requestData()
+
+  finishPull()
+}
+async function requestData() {
+  try {
+    const newData = await ajaxGet(/* url */)
+  } catch (err) {
+    // handle err
+    console.log(err)
+  }
+}
+function ajaxGet(/* url */) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(20)
+    }, 1000)
+  })
+}
+// console.log(pullRefreshStyle)
+// const count = ref(0);
+// const loading = ref(false);
+// const onRefresh = () => {
+//   setTimeout(() => {
+//     Toast('刷新成功');
+//     loading.value = false;
+//     count.value++;
+//   }, 1000);
+// };
+// const onChange = (pullProps: PullRefreshProps) => {
+//   console.log(pullProps)
+// }
 
 /**
  * 表单
  * **/
 interface FormData {
-  project: any,
-  project_name: any,
+  project: any
+  project_name: any
   time: number
 }
 const formData = ref<[FormData]>([
@@ -96,73 +169,74 @@ const formData = ref<[FormData]>([
     project: 0,
     project_name: '',
     time: 100,
-  }
+  },
 ])
-const showPicker = ref(false);
+const showPicker = ref(false)
 const columns = [
   { text: '芝麻官', value: 1 },
   { text: '明皇帝', value: 2 },
   { text: '妖修', value: 3 },
   { text: '仙命诀', value: 4 },
   { text: '混合云', value: 5 },
-];
-const selectedIndex = ref(0);
-
+]
+const selectedIndex = ref(0)
 
 const onConfirm = (obj: any) => {
   formData.value[selectedIndex.value].project = obj.value
   formData.value[selectedIndex.value].project_name = obj.text
-  showPicker.value = false;
-};
+  showPicker.value = false
+}
 
 // 提交
 const onSubmit = () => {
-  Toast('表单提交');
+  Toast('表单提交')
 }
 
 // 新增
-function handleAdd () {
+function handleAdd() {
   formData.value.push({
     project: 0,
     project_name: '',
     time: 0,
   })
+  finishPull()
 }
 
 // 删除
 function handleDelete(index: number) {
-  if(formData.value.length === 1) {
-     Toast('最少填写一个项目工时');
+  if (formData.value.length === 1) {
+    Toast('最少填写一个项目工时')
     return
   }
   selectedIndex.value = 0
   formData.value.splice(index, 1)
+  finishPull()
   console.log(index)
 }
 //
-function handleShowPicker (index: number) {
+function handleShowPicker(index: number) {
   showPicker.value = true
   selectedIndex.value = index
 }
 
-function handleSlider (index: number, value: number) {
+function handleSlider(index: number, value: number) {
   const data = unref(formData)
-  if( data.length > 1) {
+  if (data.length > 1) {
     let total = 0
     data.forEach((item) => {
-      total += item.time 
-    });
+      total += item.time
+    })
 
     for (let i = 0; i < data.length; i++) {
-      if(data[i].time > 0) {
-        if(i !== index) {
+      if (data[i].time > 0) {
+        if (i !== index) {
           data[i].time = data[i].time + (100 - total)
           return false
         }
       }
     }
-    formData.value.every((item,idx) => {
-      if(idx !== index && item.time !== 0) {
+    formData.value.every((item, idx) => {
+      if (idx !== index && item.time !== 0) {
         item.time = item.time - 5
         return false
       }
@@ -172,11 +246,28 @@ function handleSlider (index: number, value: number) {
 </script>
 
 <style scoped lang="less">
-  .delete-button {
-    height: 100%;
+.delete-button {
+  height: 100%;
+}
+:deep(.van-cell-group--inset) {
+  border: 1px solid var(--van-cell-border-color);
+}
+.bottom-btn {
+  margin: 15px;
+  margin-bottom: 0;
+}
+.pullup {
+  .pullup-wrapper {
+    overflow: hidden;
   }
-  :deep(.van-cell-group--inset) {
-    border: 1px solid var(--van-cell-border-color)
+  .pullup-list-item {
+    padding: 10px 0;
+    list-style: none;
   }
-
+  .pullup-tips {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+  }
+}
 </style>
