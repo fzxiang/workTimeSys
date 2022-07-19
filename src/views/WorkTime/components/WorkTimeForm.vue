@@ -13,7 +13,7 @@
           />
           <van-field name="slider" label="工时">
             <template #input>
-              <van-slider v-model="item.time" step="5" style="margin-right: 20px">
+              <van-slider v-model="item.time" step="5" style="margin-right: 20px" @update:model-value="handleSlider(index, item.time)">
                 <template #button>
                   <van-button type="primary" size="mini" round style="width: 40px">{{ item.time }}%</van-button>
                 </template>
@@ -51,7 +51,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , unref} from 'vue'
+import { Toast } from "vant";
+
 import type {
   PickerObjectOption,
 } from 'vant';
@@ -59,11 +61,16 @@ import type {
 /**
  * 表单
  * **/
-const formData = ref([
+interface FormData {
+  project: number,
+  project_name: any,
+  time: number
+}
+const formData = ref<[FormData]>([
   {
-    project: '',
+    project: 0,
     project_name: '',
-    time: 0,
+    time: 100,
   }
 ])
 const showPicker = ref(false);
@@ -80,29 +87,30 @@ const selectedIndex = ref(0);
 const onConfirm = (obj: PickerObjectOption) => {
   formData.value[selectedIndex.value].project = obj.value
   formData.value[selectedIndex.value].project_name = obj.text
-  // result.value = selectedOptions[0]?.text;
   showPicker.value = false;
 };
 
-
-
 // 提交
 const onSubmit = () => {
-  console.log('表单提交')
+  Toast('表单提交');
 }
+
 // 新增
 function handleAdd () {
   formData.value.push({
-    project: '',
+    project: 0,
     project_name: '',
     time: 0,
   })
 }
+
 // 删除
 function handleDelete(index: number) {
   if(formData.value.length === 1) {
+     Toast('最少填写一个项目工时');
     return
   }
+  selectedIndex.value = 0
   formData.value.splice(index, 1)
   console.log(index)
 }
@@ -110,6 +118,31 @@ function handleDelete(index: number) {
 function handleShowPicker (index: number) {
   showPicker.value = true
   selectedIndex.value = index
+}
+
+function handleSlider (index: number, value: number) {
+  const data = unref(formData)
+  if( data.length > 1) {
+    let total = 0
+    data.forEach((item) => {
+      total += item.time 
+    });
+
+    for (let i = 0; i < data.length; i++) {
+      if(data[i].time > 0) {
+        if(i !== index) {
+          data[i].time = data[i].time + (100 - total)
+          return false
+        }
+      }
+    }
+    formData.value.every((item,idx) => {
+      if(idx !== index && item.time !== 0) {
+        item.time = item.time - 5
+        return false
+      }
+    })
+  }
 }
 </script>
 

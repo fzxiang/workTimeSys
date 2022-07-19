@@ -1,19 +1,43 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import Components from 'unplugin-vue-components/vite';
-import { VantResolver } from 'unplugin-vue-components/resolvers';
+import path from 'path';
+import { defineConfig } from 'vite'
+import { createProxy } from './build/vite/proxy';
+import { createVitePlugins } from './build/vite/plugin';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    host: true,
-    open: true,
-    port: 3000
-  },
-  plugins: [
-    vue(),
-    Components({
-      resolvers: [VantResolver()]
-    })
-  ]
-});
+const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"]]
+// const VITE_PROXY = [[]]
+
+const viteEnv = {
+  VITE_USE_MOCK: true
+}
+const pathSrc = path.resolve(__dirname, 'src')
+
+export default ({ command }) => {
+  const isBuild = command === 'build';
+
+  return defineConfig({
+    resolve: {
+			alias: {
+				'@': pathSrc,
+			},
+		},
+    server: {
+      host: true,
+      open: true,
+      port: 3000,
+      proxy: createProxy(VITE_PROXY), 
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+			}
+    },
+    plugins: createVitePlugins(viteEnv, isBuild),
+		css: {
+			preprocessorOptions: {
+				less: {
+					// modifyVars: generateModifyVars(),
+					// javascriptEnabled: true,
+				},
+			},
+		},
+  })
+
+}

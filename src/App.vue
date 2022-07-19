@@ -6,9 +6,25 @@ import WorkTime from './views/WorkTime/index.vue'
 
 <template>
   <Suspense>
-    <WorkTime />
+    <div class="wrapper">
+      <WorkTime class="wrapperItem" />
+    </div>
   </Suspense>
 </template>
 
 <style scoped>
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+.wrapperItem {
+  background: #eee;
+  
+}
+@media screen and (min-width: 1280px) {
+  .wrapperItem {
+    width: 800px;
+  }
+}
 </style>
