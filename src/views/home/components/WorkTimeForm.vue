@@ -1,7 +1,8 @@
 <template>
-    <van-form @submit="onSubmit">
+  <van-form @submit="onSubmit">
+    <van-pull-refresh v-model="loading" @refresh="onRefresh" @change="onChange"  :style="pullRefreshStyle">
       <van-swipe-cell v-for="(item, index) in formData" :key="index" >
-        <van-cell-group inset style="margin-top: 15px">
+        <van-cell-group :inset="true" style="margin-top: 15px">
           <van-field
             v-model="item.project_name"
             is-link
@@ -25,44 +26,68 @@
           <van-button square type="danger" text="删除" class="delete-button" @click="handleDelete(index)"/>
         </template>
       </van-swipe-cell>
-  
+    </van-pull-refresh>
 
-      <van-popup v-model:show="showPicker" position="bottom">
-        <van-picker
-          v-model="formData[selectedIndex].project"
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </van-popup>
-      <van-row gutter="20" style="margin: 15px; margin-top: 15px">
-        <van-col span="12">
-           <van-button round block plain type="primary" @click="handleAdd">
-            新增项目
-          </van-button>
-        </van-col>
-        <van-col span="12">
-          <van-button round block type="primary" native-type="submit">
-            提交
-          </van-button>
-        </van-col>
-      </van-row>
-    </van-form>
+    <van-popup v-model:show="showPicker" position="bottom">
+      <van-picker
+        v-model="formData[selectedIndex].project"
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
+    </van-popup>
+    <van-row gutter="20" style="margin: 15px; margin-top: 15px">
+      <van-col span="12">
+          <van-button round block plain type="primary" @click="handleAdd">
+          新增项目
+        </van-button>
+      </van-col>
+      <van-col span="12">
+        <van-button round block type="primary" native-type="submit">
+          提交
+        </van-button>
+      </van-col>
+    </van-row>
+  </van-form>
 </template>
+
 
 <script setup lang="ts">
 import { ref , unref} from 'vue'
 import { Toast } from "vant";
-
 import type {
-  PickerObjectOption,
+  PickerProps,
+  PickerColumn,
+  PickerOption,
+  PullRefreshProps
 } from 'vant';
+
+
+/**
+ * 下拉刷新
+ * **/
+const pullRefreshStyle = {
+  'min-height': window.innerHeight + 'px'
+}
+console.log(pullRefreshStyle)
+const count = ref(0);
+const loading = ref(false);
+const onRefresh = () => {
+  setTimeout(() => {
+    Toast('刷新成功');
+    loading.value = false;
+    count.value++;
+  }, 1000);
+};
+const onChange = (pullProps: PullRefreshProps) => {
+  console.log(pullProps)
+}
 
 /**
  * 表单
  * **/
 interface FormData {
-  project: number,
+  project: any,
   project_name: any,
   time: number
 }
@@ -84,7 +109,7 @@ const columns = [
 const selectedIndex = ref(0);
 
 
-const onConfirm = (obj: PickerObjectOption) => {
+const onConfirm = (obj: any) => {
   formData.value[selectedIndex.value].project = obj.value
   formData.value[selectedIndex.value].project_name = obj.text
   showPicker.value = false;
@@ -146,8 +171,12 @@ function handleSlider (index: number, value: number) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
   .delete-button {
     height: 100%;
   }
+  :deep(.van-cell-group--inset) {
+    border: 1px solid var(--van-cell-border-color)
+  }
+
 </style>

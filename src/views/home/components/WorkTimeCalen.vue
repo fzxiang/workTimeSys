@@ -1,27 +1,21 @@
-
 <template>
-  <van-pull-refresh v-model="loading" @refresh="onRefresh" @change="onChange"  style="min-height: 100vh;" :disabled="true">
-    <div ref="calendarRef">
-      <van-calendar
-        title="工时日历"
-        :poppable="false"
-        :show-confirm="false"
-        :style="{ height: '500px' }"
-        :min-date="minData"
-        color="#1e80ff"
-        :formatter="formatter"
-      >
-        <template #bottom-info="scoped">
-          <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
-        </template>
-      </van-calendar>
-    </div>
-
-    <WorkTimeForm />
-
-  </van-pull-refresh>
-
+ <van-calendar
+    title="工时日历"
+    :show-title="false"
+    :poppable="false"
+    :show-confirm="false"
+    :show-mark="false"
+    :style="{ height: '130px' }"
+    :min-date="minData"
+    color="#1e80ff"
+    :formatter="formatter"
+  >
+    <template #bottom-info="scoped">
+      <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
+    </template>
+  </van-calendar>
 </template>
+
 
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -29,20 +23,13 @@ import dayjs from 'dayjs'
 import { Toast } from "vant";
 import { useScrollParent, useEventListener } from '@vant/use';
 import type {
-  CalendarType,
-  CalendarProps,
   CalendarDayItem,
   PullRefreshProps,
-  PickerObjectOption,
-  CalendarInstance,
 } from 'vant';
-
-import WorkTimeForm from "./components/WorkTimeForm.vue";
 
 const today = dayjs()
 const minData = new Date(2022, 0)
 
-const calendarRef = ref()
 // console.log(calendarRef)
 // useEventListener(
 //   'scroll',
@@ -102,19 +89,17 @@ function handleFillStatus(scoped: CalendarDayItem) {
   return res
 }
 
-// 下拉刷新
-const count = ref(0);
-const loading = ref(false);
-const onRefresh = () => {
-  setTimeout(() => {
-    Toast('刷新成功');
-    loading.value = false;
-    count.value++;
-  }, 1000);
-};
-const onChange = (pullProps: PullRefreshProps) => {
-  console.log(pullProps)
-}
-
 
 </script>
+
+<style lang="less" scoped>
+ :deep(.van-calendar__selected-day)  {
+    border-radius: 50%;
+  }
+  :deep(.van-calendar__bottom-info) {
+    bottom: 12px;
+  }
+  :deep(.van-calendar__body) {
+    overflow: hidden;
+  }
+</style>
