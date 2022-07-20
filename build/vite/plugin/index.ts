@@ -5,6 +5,12 @@ import Components from 'unplugin-vue-components/vite'
 import { configMockPlugin } from './mock';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { VantResolver } from 'unplugin-vue-components/resolvers';
+import legacy from '@vitejs/plugin-legacy'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import { visualizer } from 'rollup-plugin-visualizer'
+import path from 'path'
+import { viteVConsole } from 'vite-plugin-vconsole'
+
 // import Icons from 'unplugin-icons/vite'
 // import IconsResolver from 'unplugin-icons/resolver'
 
@@ -16,6 +22,12 @@ export function createVitePlugins(viteEnv, isBuild) {
 	const vitePlugins = [
 		// have to
 		vue(),
+		vueJsx(),
+		visualizer(),
+
+		legacy({
+			targets: ['defaults', 'not IE 11']
+		}),
 
 		AutoImport({
 			// Auto import functions from Vue, e.g. ref, reactive, toRef...
@@ -53,6 +65,15 @@ export function createVitePlugins(viteEnv, isBuild) {
 			// dts: path.resolve(pathSrc, 'components.d.ts'),
 		}),
 
+		viteVConsole({
+			entry: [path.resolve('src/main.ts')],
+			localEnabled: !isBuild,
+			enabled: false,
+			config: {
+				maxLogNumber: 1000,
+				theme: 'light'
+			}
+		})
 		// Icons({
 		// 	autoInstall: true,
 		// }),

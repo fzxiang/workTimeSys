@@ -15,7 +15,8 @@ function pathResolve(dir: string) {
 export default ({ command }) => {
   const isBuild = command === 'build';
 
-  return defineConfig({
+  // @ts-ignore
+	return defineConfig({
     resolve: {
 			alias: [
 				{

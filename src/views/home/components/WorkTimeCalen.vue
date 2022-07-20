@@ -18,7 +18,7 @@
     </template>
     <template #subtitle>
       <van-row>
-        <van-col span="6"></van-col>
+        <van-col span="6" />
         <van-col span="12"> {{ title }} </van-col>
         <van-col span="6" style="font-size: 0; text-align: right">
           <van-button class="link-btn" plain type="primary">工时统计</van-button>

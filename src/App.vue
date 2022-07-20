@@ -1,6 +1,11 @@
 <template>
   <Suspense>
-    <van-config-provider :theme-vars="themeVars" class="wrapper" ref="scroll" :style="wrapperStyle">
+    <van-config-provider
+      :theme-vars="themeVars"
+      class="wrapper"
+      :theme="theme"
+      :style="wrapperStyle"
+    >
       <div class="wrapper-item">
         <router-view />
       </div>
@@ -9,8 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import Home from '@/views/home/index.vue'
+import { watch, ref } from 'vue'
+import type { ConfigProviderTheme } from 'vant'
+import { localStorage } from '/@/utils/local-storage'
+import { useStore } from '/@/stores'
 
 const wrapperStyle = {
   height: window.innerHeight + 'px',
@@ -20,22 +27,23 @@ const themeVars = {
   CalendarSelectedDaySize: '44px',
 }
 
-// import BScroll from '@better-scroll/core'
-// import Pullup from '@better-scroll/pull-up'
+const store = useStore()
+const theme = ref<ConfigProviderTheme>('light')
+const mode = computed(() => store.mode)
 
-// BScroll.use(Pullup)
-
-// const scroll = ref()
-
-// onMounted(() => {
-//   const bscroll = new BScroll('.wrapper', {
-//     pullUpLoad: true
-//   })
-
-//   bscroll.on('pullingUp', () => {
-//     console.log('下拉')
-//   })
-// })
+watch(
+  mode,
+  (val) => {
+    if (val === 'dark' || localStorage.get('theme') === 'dark') {
+      theme.value = 'dark'
+      document.querySelector('html').setAttribute('data-theme', 'dark')
+    } else {
+      theme.value = 'light'
+      document.querySelector('html').setAttribute('data-theme', 'light')
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="less" scoped>

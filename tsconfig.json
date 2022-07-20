@@ -2,57 +2,35 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "noLib": false,
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
-    "strictFunctionTypes": false,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "importHelpers": true,
+    "moduleResolution": "node",
     "allowJs": true,
-    "sourceMap": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "/@/*": ["src/*"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "strictNullChecks": false,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
-    "types": [
-      "vite/client"
-    ],
-    "removeComments": true,
-    "paths": {
-      "/@/*": [
-        "src/*"
-      ],
-      "/#/*": [
-        "types/*"
-      ]
-    }
+    "importsNotUsedAsValues": "preserve"
   },
   "include": [
-    "tests/**/*.ts",
+    "src/App.vue",
     "src/**/*.ts",
-    "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "types/**/*.d.ts",
-    "types/**/*.ts",
-    "build/**/*.ts",
-    "build/**/*.d.ts",
-    "mock/**/*.ts",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
     "tests/**/*.ts",
-    "dist",
-    "**/*.js"
+    "tests/**/*.tsx",
+    "components.d.ts",
+    "auto-imports.d.ts"
   ]
 }
