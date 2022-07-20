@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { watch, ref } from 'vue'
 import type { ConfigProviderTheme } from 'vant'
-import { localStorage } from '/@/utils/local-storage'
+import { localStore } from '/@/utils/local-storage'
 import { useStore } from '/@/stores'
 
 const wrapperStyle = {
@@ -34,7 +34,7 @@ const mode = computed(() => store.mode)
 watch(
   mode,
   (val) => {
-    if (val === 'dark' || localStorage.get('theme') === 'dark') {
+    if (val === 'dark' || localStore.get('theme') === 'dark') {
       theme.value = 'dark'
       document.querySelector('html').setAttribute('data-theme', 'dark')
     } else {
@@ -48,16 +48,19 @@ watch(
 
 <style lang="less" scoped>
 .wrapper {
-  display: flex;
-  justify-content: center;
-  height: 100%;
+  //display: flex;
+  //justify-content: center;
+  //height: 100%;
+  text-align: center;
   overflow: auto;
   .wrapper-item {
-    flex: 1;
+    //flex: 1;
   }
 }
 @media screen and (min-width: 640px) {
   .wrapper-item {
+    //flex: none;
+    display: inline-block;
     width: 800px;
   }
 }

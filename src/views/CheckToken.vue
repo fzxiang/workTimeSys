@@ -1,28 +1,24 @@
 <template>
-  <van-switch v-model="checked" size="18px" />
+  <!--  <main class="main">-->
+  <!--    <van-switch v-model="checked" size="18px" />-->
+  <!--  </main>-->
 </template>
 
 <script setup lang="ts">
-import { useUrlSearchParams } from '@vueuse/core'
-
-const params = useUrlSearchParams('history')
-console.log(params)
-
-
 import { useStore } from '/@/stores'
-import { localStorage } from '/@/utils/local-storage'
+import { localStore } from '/@/utils/local-storage'
 
 const store = useStore()
-const themeStore = localStorage.get('theme')
-const checked = ref<boolean>(themeStore === 'dark' ? true: false)
+const themeStore = localStore.get('theme')
+const checked = ref<boolean>(themeStore === 'dark' ? true : false)
 
-watch(checked,(val) => {
-  if(val) {
+watch(checked, (val) => {
+  if (val) {
     store.mode = 'dark'
-    localStorage.set('theme', 'dark')
+    localStore.set('theme', 'dark')
   } else {
     store.mode = 'light'
-    localStorage.set('theme', 'light')
+    localStore.set('theme', 'light')
   }
 })
 </script>

@@ -4,6 +4,18 @@ import expirePlugin from 'store/plugins/expire'
 // plugin usage:
 store.addPlugin(expirePlugin)
 
-export { store as localStorage }
+const expireTime = new Date().getTime() + 60 * 60 * 24 * 1000
 
-export default store
+export const localStore = {
+  set: (key, value, expire) => {
+    if (expire) {
+      // @ts-ignore
+      return store.set(key, value, expireTime)
+    } else {
+      return store.set(key, value)
+    }
+  },
+  get: (key) => {
+    return store.get(key)
+  },
+}

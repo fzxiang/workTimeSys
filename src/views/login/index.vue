@@ -12,9 +12,28 @@
       </van-col>
     </van-row>
   </div>
+  <van-switch v-model="checked" size="18px" />
+
 </template>
 
 <script setup lang="ts">
+import { localStore } from '/@/utils/local-storage'
+import { useStore } from '/@/stores'
+
+const themeStore = localStore.get('theme')
+const checked = ref<boolean>(themeStore === 'dark' ? true : false)
+const store = useStore()
+
+watch(checked, (val) => {
+  if (val) {
+    store.mode = 'dark'
+    localStore.set('theme', 'dark')
+  } else {
+    store.mode = 'light'
+    localStore.set('theme', 'light')
+  }
+})
+
 function handleSSOLogin() {
   location.href = location.origin + '/ssoLogin'
 }

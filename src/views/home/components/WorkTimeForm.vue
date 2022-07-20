@@ -93,7 +93,7 @@ import PullDown from '@better-scroll/pull-down'
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 const pullRefreshStyle = ref({
-  height: window.innerHeight - 130 - 74 + 'px',
+  height: window.innerHeight - 130 - 84 + 'px',
   // background: '#eee',
 })
 const scroll = ref()
@@ -250,7 +250,7 @@ function handleSlider(index: number, value: number) {
   border: 1px solid var(--van-cell-border-color);
 }
 .bottom-btn {
-  background: var(--van-cell-background);
+  background: var(--van-background);
   padding: 15px;
 }
 .van-cell-group {
