@@ -73,14 +73,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, unref, nextTick } from 'vue'
-import { Toast } from 'vant'
+import { ref, onMounted, nextTick } from 'vue'
+import { showToast } from 'vant'
 import type {
   PickerConfirmEventParams,
-  PickerProps,
-  PickerColumn,
-  PickerOption,
-  PullRefreshProps,
+  // PickerProps,
+  // PickerColumn,
+  // PickerOption,
+  // PullRefreshProps,
 } from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
@@ -94,7 +94,7 @@ BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 const pullRefreshStyle = ref({
   height: window.innerHeight - 130 - 74 + 'px',
-  background: '#eee',
+  // background: '#eee',
 })
 const scroll = ref()
 const bscroll = ref()
@@ -155,8 +155,8 @@ function ajaxGet(/* url */) {
  * 表单
  * **/
 interface FormData {
-  project: number
-  project_name: string
+  project: number | string
+  project_name: number | string
   time: number
 }
 const formData = ref<[FormData]>([
@@ -191,7 +191,7 @@ function handleShowPicker(index: number) {
 }
 // 提交
 const onSubmit = () => {
-  Toast('表单提交')
+  showToast('表单提交')
 }
 
 // 新增
@@ -207,7 +207,7 @@ function handleAdd() {
 // 删除
 function handleDelete(index: number) {
   if (formData.value.length === 1) {
-    Toast('最少填写一个项目工时')
+    showToast('最少填写一个项目工时')
     return
   }
   selectedIndex.value = 0
@@ -250,7 +250,8 @@ function handleSlider(index: number, value: number) {
   border: 1px solid var(--van-cell-border-color);
 }
 .bottom-btn {
-  margin: 15px;
+  background: var(--van-cell-background);
+  padding: 15px;
 }
 .van-cell-group {
   margin-bottom: 10px;
