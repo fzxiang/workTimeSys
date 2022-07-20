@@ -4,7 +4,7 @@
       <van-col span="16">
         <h1>泡游工时系统</h1>
       </van-col>
-      <van-col span="16" style='margin-top: 40px'>
+      <van-col span="16" style="margin-top: 40px">
         <img style="width: 100%" src="./login-box-bg.svg" class="logo" alt="logo" />
       </van-col>
       <van-col span="16" style="margin-top: 40px">

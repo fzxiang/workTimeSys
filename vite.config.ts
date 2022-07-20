@@ -1,4 +1,4 @@
-import path from 'path';
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import { createProxy } from './build/vite/proxy';
 import { createVitePlugins } from './build/vite/plugin';
@@ -9,20 +9,28 @@ const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"], ["/ssoLogin", "htt
 const viteEnv = {
   VITE_USE_MOCK: true
 }
-const pathSrc = path.resolve(__dirname, 'src')
-
+function pathResolve(dir: string) {
+	return resolve(process.cwd(), '.', dir);
+}
 export default ({ command }) => {
   const isBuild = command === 'build';
 
   return defineConfig({
     resolve: {
-			alias: {
-				'@': pathSrc,
-			},
+			alias: [
+				{
+					find: /\/@\//,
+					replacement: pathResolve('src') + '/',
+				},
+				// /#/xxxx => types/xxxx
+				{
+					find: /\/#\//,
+					replacement: pathResolve('types') + '/',
+				},
+			],
 		},
     server: {
       host: true,
-      open: true,
       port: 3000,
       proxy: createProxy(VITE_PROXY),
 			headers: {

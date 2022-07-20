@@ -75,7 +75,13 @@
 <script setup lang="ts">
 import { ref, onMounted, unref, nextTick } from 'vue'
 import { Toast } from 'vant'
-import type { PickerConfirmEventParams, PickerProps, PickerColumn, PickerOption, PullRefreshProps } from 'vant'
+import type {
+  PickerConfirmEventParams,
+  PickerProps,
+  PickerColumn,
+  PickerOption,
+  PullRefreshProps,
+} from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'

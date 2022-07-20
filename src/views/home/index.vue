@@ -15,7 +15,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import WorkTimeForm from '@/views/home/components/WorkTimeForm.vue'
-import WorkTimeCalen from '@/views/home/components/WorkTimeCalen.vue'
-import Demo from '@/views/home/components/demo.vue'
+import WorkTimeForm from '/@/views/home/components/WorkTimeForm.vue'
+import WorkTimeCalen from '/@/views/home/components/WorkTimeCalen.vue'
+import Demo from '/@/views/home/components/demo.vue'
 </script>
