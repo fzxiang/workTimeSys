@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import { createProxy } from './build/vite/proxy';
 import { createVitePlugins } from './build/vite/plugin';
 
-const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"]]
+const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"], ["/ssoLogin", "http://10.130.0.37:9093/ssoLogin"]]
 // const VITE_PROXY = [[]]
 
 const viteEnv = {
@@ -24,7 +24,7 @@ export default ({ command }) => {
       host: true,
       open: true,
       port: 3000,
-      proxy: createProxy(VITE_PROXY), 
+      proxy: createProxy(VITE_PROXY),
 			headers: {
 				'Access-Control-Allow-Origin': '*',
 			}

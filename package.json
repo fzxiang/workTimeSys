@@ -15,9 +15,11 @@
     "@better-scroll/pull-down": "^2.4.2",
     "@better-scroll/pull-up": "^2.4.2",
     "@vant/use": "^1.4.1",
+    "@vueuse/core": "^8.9.4",
     "dayjs": "^1.11.3",
     "vant": "^4.0.0-alpha.0",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@types/node": "^18.0.6",

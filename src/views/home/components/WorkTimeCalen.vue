@@ -2,11 +2,13 @@
   <van-calendar
     title="工时日历"
     ref="calendarRef"
-    :show-title="true"
+    :show-title="false"
     :poppable="false"
     :show-confirm="false"
     :show-mark="false"
-    :style="{ height: '180px' }"
+    :safe-area-inset-bottom="false"
+    @month-show="onMonthShow"
+    :style="{ height: '130px' }"
     :min-date="minData"
     color="#1e80ff"
     :formatter="formatter"
@@ -14,8 +16,15 @@
     <template #bottom-info="scoped">
       <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
     </template>
-    <template #title>
-      <div>日历日历日历日历</div>
+    <template #subtitle>
+      <van-row>
+        <van-col span="6"></van-col>
+        <van-col span="12"> {{ title }} </van-col>
+        <van-col span="6" style="font-size: 0; text-align: right">
+          <van-button class="link-btn" plain type="primary">工时统计</van-button>
+        </van-col>
+      </van-row>
+
     </template>
   </van-calendar>
 </template>
@@ -72,6 +81,11 @@ function formatter(day: any) {
 
   return day
 }
+const title = ref()
+
+function onMonthShow(obj: { date: Date; title: string }) {
+  title.value = obj.title
+}
 
 // 填写状态
 function handleFillStatus(scoped: CalendarDayItem) {
@@ -99,5 +113,9 @@ function handleFillStatus(scoped: CalendarDayItem) {
 }
 :deep(.van-calendar__body) {
   overflow: hidden;
+}
+.link-btn {
+  border: none;
+  font-weight: normal;
 }
 </style>

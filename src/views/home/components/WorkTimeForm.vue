@@ -24,7 +24,7 @@
                       @update:model-value="handleSlider(index, item.time)"
                     >
                       <template #button>
-                        <van-button type="primary" size="mini" round style="width: 40px"
+                        <van-button type="primary" size="small" round style="width: 40px"
                           >{{ item.time }}%</van-button
                         >
                       </template>
@@ -60,6 +60,7 @@
         @cancel="showPicker = false"
       />
     </van-popup>
+
     <van-row gutter="20" class="bottom-btn">
       <van-col span="12">
         <van-button round block plain type="primary" @click="handleAdd"> 新增项目 </van-button>
@@ -72,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, unref } from 'vue'
+import { ref, onMounted, unref, nextTick } from 'vue'
 import { Toast } from 'vant'
 import type { PickerConfirmEventParams, PickerProps, PickerColumn, PickerOption, PullRefreshProps } from 'vant'
 import BScroll from '@better-scroll/core'
@@ -86,7 +87,7 @@ import PullDown from '@better-scroll/pull-down'
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 const pullRefreshStyle = ref({
-  height: window.innerHeight - 180 - 64 + 'px',
+  height: window.innerHeight - 130 - 74 + 'px',
   background: '#eee',
 })
 const scroll = ref()
@@ -102,11 +103,9 @@ onMounted(() => {
       stop: 0,
     },
   })
-  bscroll.value.on('pullingDown', pullingDownHandler)
+  // bscroll.value.on('pullingDown', pullingDownHandler)
   bscroll.value.on('scroll', scrollHandler)
   bscroll.value.on('scrollEnd', (e) => {
-    bscroll.value.refresh()
-    bscroll.value.finishPullDown()
     console.log('scrollEnd', e)
   })
   // bscroll.value.on('scroll', pullingHandler)
@@ -116,8 +115,9 @@ function scrollHandler(pos) {
   // console.log(pos)
 }
 function finishPull() {
-  bscroll.value.finishPullDown()
-  bscroll.value.refresh()
+  nextTick(() => {
+    bscroll.value.refresh()
+  })
 }
 function crollHandler(pos) {
   console.log(pos.y)
@@ -207,9 +207,9 @@ function handleDelete(index: number) {
   selectedIndex.value = 0
   formData.value.splice(index, 1)
   finishPull()
-  console.log(index)
 }
 
+// 工时关联
 function handleSlider(index: number, value: number) {
   // const data = unref(formData)
   // if (data.length > 1) {
@@ -247,11 +247,16 @@ function handleSlider(index: number, value: number) {
   margin: 15px;
 }
 .van-cell-group {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
-//.van-cell-group:last-child {
-//  margin-bottom: 10px;
-//}
+.van-swipe-cell:first-child {
+  .van-cell-group {
+    margin-top: 10px;
+  }
+}
+.van-form {
+  padding-top: 10px;
+}
 .pullup {
   .pullup-wrapper {
     overflow: hidden;
