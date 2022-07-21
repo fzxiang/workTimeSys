@@ -10,11 +10,11 @@ import { showNotify } from 'vant'
 // 需要注意的是，请尽量保证使用中横线`-` 来作为分隔符，
 // 避免被 nginx 等负载均衡器丢弃了自定义的请求头
 
-const { VUE_APP_API_BASE_URL } = import.meta.env
+const { VITE_APP_API_BASE_URL } = import.meta.env
 // 创建 axios 实例
 const request = axios.create({
   // API 请求的默认前缀
-  baseURL: VUE_APP_API_BASE_URL,
+  baseURL: VITE_APP_API_BASE_URL,
   timeout: 6000, // 请求超时时间
 })
 

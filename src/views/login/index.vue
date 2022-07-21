@@ -33,8 +33,9 @@ watch(checked, (val) => {
   }
 })
 
+const { VITE_APP_API_BASE_URL } = import.meta.env
 function handleSSOLogin() {
-  location.href = location.origin + '/sso_api/ssoLogin'
+  location.href = location.origin + VITE_APP_API_BASE_URL + '/ssoLogin'
 }
 </script>
 

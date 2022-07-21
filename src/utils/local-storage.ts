@@ -1,3 +1,4 @@
+// 有缓存的local storage
 import store from 'store'
 import expirePlugin from 'store/plugins/expire'
 
