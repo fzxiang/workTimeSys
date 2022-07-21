@@ -2,9 +2,10 @@ import type { AxiosRequestConfig, AxiosError } from 'axios'
 import axios, { AxiosResponse } from 'axios'
 import type { ResponseBody } from '/@/api/typing'
 import { localStore } from '/@/utils/local-storage'
-import { STORAGE_USER_TOKEN_KEY, REQUEST_TOKEN_KEY } from '/@/setting/projectSetting'
+import setting from '/@/setting/projectSetting'
 import { showNotify } from 'vant'
 
+const { STORAGE_USER_TOKEN_KEY, REQUEST_TOKEN_KEY, EXPIRE_LOGIN_CODE, STORAGE_USER_KEY } = setting
 // 这里是用于设定请求后端时，所用的 Token KEY
 // 可以根据自己的需要修改，常见的如 Access-Token，Authorization
 // 需要注意的是，请尽量保证使用中横线`-` 来作为分隔符，
@@ -68,7 +69,19 @@ request.interceptors.request.use(requestHandler, errorHandler)
 const responseHandler = (
   response: AxiosResponse,
 ): ResponseBody<any> | AxiosResponse<any> | Promise<any> | any => {
-  return response.data
+  const res = response.data
+  switch (res.code) {
+    case 0:
+      return res.data;
+    case -1:
+      showNotify({ type: 'warning', message: res.msg })
+      return res
+    case EXPIRE_LOGIN_CODE:
+      localStore.remove(STORAGE_USER_KEY)
+      return res
+    default:
+      return res
+  }
 }
 
 // Add a response interceptor

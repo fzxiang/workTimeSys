@@ -29,4 +29,7 @@ export const localStore = {
     }
     return result
   },
+  remove: (key) => {
+    return store.remove(key)
+  },
 }

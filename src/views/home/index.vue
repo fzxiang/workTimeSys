@@ -1,12 +1,8 @@
 <template>
   <div>
     <work-time-calen />
-    <WorkTimeForm />
-    <!-- <Demo/> -->
+    <WorkTimeForm :columns="columns" />
   </div>
-  <!-- <van-pull-refresh v-model="loading" @refresh="onRefresh" @change="onChange"  :style="pullRefreshStyle">
-
-  </van-pull-refresh> -->
 </template>
 
 <script lang="ts">
@@ -17,15 +13,71 @@ export default {
 <script setup lang="ts">
 import WorkTimeForm from '/@/views/home/components/WorkTimeForm.vue'
 import WorkTimeCalen from '/@/views/home/components/WorkTimeCalen.vue'
-import Demo from '/@/views/home/components/demo.vue'
 import { useStore } from '/@/stores'
-import { getProjectConfig } from '/@/api/home'
+import { getProjectConfig, getUserConfig } from '/@/api/home'
+import { localStore } from '/@/utils/local-storage'
+import setting from '/@/setting/projectSetting'
+import { getVersionInfo } from '/@/api/sso'
+
+const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT } = setting
+const PROJECT = GET_PROJECT()
+const PROJECT_VERSION = GET_PROJECT_VERSION()
+const WORKING = GET_WORKING()
+const WORKING_VERSION = GET_WORKING_VERSION()
+
+const columns = ref<any>([])
+const store = useStore()
+
+const changeStore = (store, key, value) => {
+  store[key] = value
+}
+const checkStorageVersion = async () => {
+  const { working_version, project_version } = await getVersionInfo()
+  const WORKING_VERSION = GET_WORKING_VERSION()
+  const PROJECT_VERSION = GET_PROJECT_VERSION()
+  const [local_working_version, local_project_version] = [
+    localStore.get(WORKING_VERSION),
+    localStore.get(PROJECT_VERSION),
+  ]
+  if (local_working_version !== undefined) {
+    changeStore(store, 'workingVersionExpire', local_working_version < working_version)
+  }
+  // 为0 或 undefined
+  else {
+    store.workingVersionExpire = true
+  }
+  if (local_project_version !== undefined) {
+    changeStore(store, 'projectVersionExpire', local_project_version < project_version)
+  }
+  // 为0 或 undefined
+  else {
+    store.projectVersionExpire = true
+  }
+}
 
 onMounted(async () => {
-  const store = useStore()
+  await checkStorageVersion()
+  // 项目配置 校验版本
   if (store.projectVersionExpire) {
-    const resData = await getProjectConfig()
-    console.log(resData)
+    const { project, project_version } = await getProjectConfig()
+    columns.value = project.map((item) => {
+      return {
+        text: item.name,
+        value: item.id,
+      }
+    })
+    localStore.set(PROJECT, columns.value, false)
+    localStore.set(PROJECT_VERSION, project_version, false)
+    store.projectVersionExpire = false
+  } else {
+    const columnsCache = localStore.get(PROJECT)
+    if (columnsCache && columnsCache.length !== 0) {
+      columns.value = columnsCache
+    }
+  }
+  if (store.workingVersionExpire) {
+    const data = await getUserConfig()
+    console.log(data)
   }
 })
 </script>

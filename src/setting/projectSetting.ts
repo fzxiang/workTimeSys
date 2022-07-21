@@ -1,17 +1,25 @@
 import { localStore } from '/@/utils/local-storage'
 
-// token key
-export const STORAGE_TOKEN_KEY = 'Authorization'
-// 存储用户数据 key
-export const STORAGE_USER_KEY = 'userStore'
-// token key
-export const STORAGE_USER_TOKEN_KEY = 'userStore.token'
+const STORAGE_USER_NAME_KEY = 'userStore.user_name_en'
 
-export const STORAGE_USER_NAME_KEY = 'userStore.user_name_en'
+const setting = {
+  // token key
+  STORAGE_TOKEN_KEY: 'Authorization',
+  // 存储用户数据 key
+  STORAGE_USER_KEY: 'userStore',
 
-// 请求头 token name
-export const REQUEST_TOKEN_KEY = 'Authorization'
+  // token key
+  STORAGE_USER_TOKEN_KEY: 'userStore.token',
 
-// 用户关联版本
-export const GET_WORKING_VERSION = () => localStore.get(STORAGE_USER_NAME_KEY) + '_working_version'
-export const GET_PROJECT_VERSION = () => localStore.get(STORAGE_USER_NAME_KEY) + '_project_version'
+  // 请求头 token name
+  REQUEST_TOKEN_KEY: 'Authorization',
+  EXPIRE_LOGIN_CODE: -2,
+
+  // 用户关联版本
+  GET_WORKING_VERSION: () => localStore.get(STORAGE_USER_NAME_KEY) + '_working_version',
+  GET_PROJECT_VERSION: () => localStore.get(STORAGE_USER_NAME_KEY) + '_project_version',
+  GET_WORKING: () => localStore.get(STORAGE_USER_NAME_KEY) + '_working',
+  GET_PROJECT: () => localStore.get(STORAGE_USER_NAME_KEY) + '_project',
+}
+
+export default setting

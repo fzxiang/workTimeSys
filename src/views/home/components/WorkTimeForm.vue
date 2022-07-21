@@ -55,7 +55,7 @@
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         v-model="selectedValues"
-        :columns="columns"
+        :columns="props.columns"
         @confirm="onConfirm"
         @cancel="showPicker = false"
       />
@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, defineProps } from 'vue'
 import { showToast } from 'vant'
 import type {
   PickerConfirmEventParams,
@@ -85,14 +85,10 @@ import type {
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'
-import { useStore } from '/@/stores'
-import { getProjectConfig } from '/@/api/home'
-
 
 /**
  * 下拉刷新
  * **/
-
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 const pullRefreshStyle = ref({
@@ -171,6 +167,10 @@ const formData = ref<[FormData]>([
 ])
 const showPicker = ref(false)
 
+const props = defineProps({
+  columns: Array,
+})
+console.log(props)
 const columns = [
   { text: '芝麻官', value: 1 },
   { text: '明皇帝', value: 2 },
