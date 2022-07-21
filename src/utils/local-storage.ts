@@ -16,6 +16,16 @@ export const localStore = {
     }
   },
   get: (key) => {
-    return store.get(key)
+    const keyArr = key.split('.')
+    let result = ''
+    if (keyArr.length > 1) {
+      const params = store.get(keyArr[0])
+      if (params) {
+        result = params[keyArr[1]]
+      }
+    } else {
+      result = store.get(key)
+    }
+    return result
   },
 }

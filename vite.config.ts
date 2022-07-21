@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import { createProxy } from './build/vite/proxy';
 import { createVitePlugins } from './build/vite/plugin';
 
-const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"], ["/ssoLogin", "http://10.130.0.37:9093/ssoLogin"]]
+const VITE_PROXY = [["/api","http://172.18.90.214:8082/api"], ["/sso_api", "http://10.130.0.37:9093"]]
 // const VITE_PROXY = [[]]
 
 const viteEnv = {

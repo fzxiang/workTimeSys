@@ -1,5 +1,11 @@
-import request from '/@/utils/request'
+// import request from '/@/utils/request'
 
-export async function queryProse(): Promise<any> {
-  return request('/project/prose')
-}
+// const { VITE_APP_SSO_API } = import.meta.env
+// enum Api {
+//   // 获取全部客服
+//   GET_VERSION_INFO =  '/getVersionInfo',
+// }
+//
+// export function getVersionInfo(): Promise<any> {
+//   return request('/getVersionInfo')
+// }

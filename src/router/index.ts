@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { localStore } from '/@/utils/local-storage'
+import { STORAGE_USER_KEY, STORAGE_USER_TOKEN_KEY } from '/@/setting/projectSetting'
+import { getVersionInfo } from '/@/api/sso'
 import { useUrlSearchParams } from '@vueuse/core'
 NProgress.configure({ showSpinner: true })
 
@@ -37,19 +39,13 @@ export const router = createRouter({
   },
 })
 
-const USER_STORE = 'userStore'
 const USER_TOKEN_NAME = 'token'
 const hasToken = (): boolean => {
-  const userStore = localStore.get(USER_STORE)
-  let res = false
-  if (userStore) {
-    if (userStore[USER_TOKEN_NAME]) {
-      res = true
-    }
-  }
-  return res
+  const token = localStore.get(STORAGE_USER_TOKEN_KEY)
+  return !!token
 }
 
+// 登录
 router.beforeEach(async (_to, _from, next) => {
   NProgress.start() // start progress bar
   console.log(_to)
@@ -63,7 +59,7 @@ router.beforeEach(async (_to, _from, next) => {
       const params = useUrlSearchParams('history')
       if (params[USER_TOKEN_NAME]) {
         console.log('user token 写入缓存', params)
-        localStore.set(USER_STORE, params, true)
+        localStore.set(STORAGE_USER_KEY, params, true)
         await router.push({
           path: '/',
         })
@@ -75,19 +71,20 @@ router.beforeEach(async (_to, _from, next) => {
       }
     }
   } else if (_to.path === '/login') {
-    if (hasToken()) {
-      await router.push({
-        path: '/',
-      })
-      next({ name: 'HomeIndex' })
-    } else {
-      next()
-    }
+    hasToken() ? next({ name: 'HomeIndex' }) : next()
   } else {
     next()
   }
 })
 
-router.afterEach(() => {
+router.afterEach(async (_to, _from) => {
+  // 页面路由切换 和 刷新页面 拿版本号校验
+  await checkStorageVersion()
   NProgress.done() // finish progress bar
 })
+
+async function checkStorageVersion() {
+  localStore.set('data', 'params', false)
+  const res = await getVersionInfo()
+  console.log('页面路由切换 和 刷新页面', res)
+}

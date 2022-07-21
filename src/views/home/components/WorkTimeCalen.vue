@@ -34,6 +34,7 @@ import dayjs from 'dayjs'
 import { Toast } from 'vant'
 import { useScrollParent, useEventListener } from '@vant/use'
 import type { CalendarDayItem, PullRefreshProps } from 'vant'
+import { localStore } from '/@/utils/local-storage'
 
 const calendarRef = ref()
 console.log(calendarRef)
@@ -48,6 +49,8 @@ const minData = new Date(2022, 0)
 //   },
 //   { target:  useScrollParent(calendarRef.value?.querySelector('.van-calendar__body')) }
 // );
+
+console.log("localStore.get('data')", localStore.get('data'))
 
 function formatter(day: any) {
   const month = day.date.getMonth() + 1
