@@ -5,8 +5,7 @@ import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
 import { useUrlSearchParams } from '@vueuse/core'
 NProgress.configure({ showSpinner: true })
-const { STORAGE_USER_KEY, STORAGE_USER_TOKEN_KEY, GET_PROJECT_VERSION, GET_WORKING_VERSION } =
-  setting
+const { STORAGE_USER_KEY, STORAGE_USER_TOKEN_KEY } = setting
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
   // {

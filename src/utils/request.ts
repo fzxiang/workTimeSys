@@ -2,8 +2,9 @@ import type { AxiosRequestConfig, AxiosError } from 'axios'
 import axios, { AxiosResponse } from 'axios'
 import type { ResponseBody } from '/@/api/typing'
 import { localStore } from '/@/utils/local-storage'
+
 import setting from '/@/setting/projectSetting'
-import { showNotify } from 'vant'
+import { showToast, showNotify } from 'vant'
 
 const { STORAGE_USER_TOKEN_KEY, REQUEST_TOKEN_KEY, EXPIRE_LOGIN_CODE, STORAGE_USER_KEY } = setting
 // 这里是用于设定请求后端时，所用的 Token KEY
@@ -72,9 +73,9 @@ const responseHandler = (
   const res = response.data
   switch (res.code) {
     case 0:
-      return res.data;
+      return res.data
     case -1:
-      showNotify({ type: 'warning', message: res.msg })
+      showToast(res.msg)
       return res
     case EXPIRE_LOGIN_CODE:
       localStore.remove(STORAGE_USER_KEY)

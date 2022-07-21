@@ -12,6 +12,7 @@
     :min-date="minData"
     color="#1e80ff"
     :formatter="formatter"
+    @select="onSelect"
   >
     <template #bottom-info="scoped">
       <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
@@ -30,23 +31,16 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-// import { useScrollParent, useEventListener } from '@vant/use'
 import type { CalendarDayItem } from 'vant'
-import { localStore } from '/@/utils/local-storage'
+import { useStore } from '/@/stores'
 
+const store = useStore()
+
+const monthData = store.getMonthData
 const calendarRef = ref()
-console.log(calendarRef)
 const today = dayjs()
+store.selectDate = today.format('YYYY-MM-DD')
 const minData = new Date(2022, 0)
-
-// console.log(calendarRef)
-// useEventListener(
-//   'scroll',
-//   () => {
-//     console.log('scroll');
-//   },
-//   { target:  useScrollParent(calendarRef.value?.querySelector('.van-calendar__body')) }
-// );
 
 function formatter(day: any) {
   const month = day.date.getMonth() + 1
@@ -79,24 +73,36 @@ function formatter(day: any) {
 
   return day
 }
-const title = ref()
 
+// 标题展示
+const title = ref()
 function onMonthShow(obj: { date: Date; title: string }) {
   title.value = obj.title
 }
 
-// 填写状态
+// 日期选择
+function onSelect(value: Date | Date[]) {
+  store.selectDate = dayjs(value).format('YYYY-MM-DD')
+}
 function handleFillStatus(scoped: CalendarDayItem) {
   const { date } = scoped
+  const day = dayjs(date)
+  const { $D } = day
   let res = ''
-  if (dayjs(date).isAfter(today, 'day')) {
+  // 未来日期不标记📌
+  if (day.isAfter(today, 'day')) {
     res = 'van-badge-status-none'
   }
   // 已填写
-  else if (false) {
+  else if (monthData[$D]) {
+    const { status } = monthData[$D][0]
+    if (status === 0) {
+      res = 'van-badge-status-ok'
+    }
   }
   // 未填写
   else {
+    res = 'van-badge-status-no'
   }
   return res
 }

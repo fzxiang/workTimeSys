@@ -1,7 +1,7 @@
 <template>
   <div>
     <work-time-calen />
-    <WorkTimeForm :columns="columns" />
+    <WorkTimeForm :columns="columns" :defaultForm="defaultForm" />
   </div>
 </template>
 
@@ -14,10 +14,11 @@ export default {
 import WorkTimeForm from '/@/views/home/components/WorkTimeForm.vue'
 import WorkTimeCalen from '/@/views/home/components/WorkTimeCalen.vue'
 import { useStore } from '/@/stores'
-import { getProjectConfig, getUserConfig } from '/@/api/home'
+import { getMonthWorkingHours, getProjectConfig, getUserConfig } from '/@/api/home'
 import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
 import { getVersionInfo } from '/@/api/sso'
+import dayjs from 'dayjs'
 
 const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT } = setting
 const PROJECT = GET_PROJECT()
@@ -53,8 +54,14 @@ const checkStorageVersion = async () => {
   else {
     store.projectVersionExpire = true
   }
+  return { working_version, project_version }
 }
 
+// 填写状态
+interface DefaultForm {
+  w_value?: number
+}
+const defaultForm = ref<any>([])
 onMounted(async () => {
   await checkStorageVersion()
   // 项目配置 校验版本
@@ -70,14 +77,23 @@ onMounted(async () => {
     localStore.set(PROJECT_VERSION, project_version, false)
     store.projectVersionExpire = false
   } else {
-    const columnsCache = localStore.get(PROJECT)
-    if (columnsCache && columnsCache.length !== 0) {
-      columns.value = columnsCache
+    const projectCache = localStore.get(PROJECT)
+    if (projectCache && projectCache.length !== 0) {
+      columns.value = projectCache
     }
   }
+  // 玩家默认配置
   if (store.workingVersionExpire) {
     const data = await getUserConfig()
-    console.log(data)
+    defaultForm.value = data.default
+    localStore.set(WORKING, data.default, false)
+    localStore.set(WORKING_VERSION, data.version, false)
+    store.workingVersionExpire = false
+  } else {
+    const workingCache = localStore.get(WORKING)
+    if (workingCache && workingCache.length !== 0) {
+      defaultForm.value = workingCache
+    }
   }
 })
 </script>

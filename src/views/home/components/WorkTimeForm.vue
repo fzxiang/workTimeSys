@@ -10,7 +10,7 @@
                   v-model="item.project_name"
                   is-link
                   readonly
-                  name="project"
+                  name="project_id"
                   label="项目"
                   placeholder="点击选择项目"
                   @click="handleShowPicker(index)"
@@ -18,14 +18,14 @@
                 <van-field name="slider" label="工时">
                   <template #input>
                     <van-slider
-                      v-model="item.time"
+                      v-model="item.w_value"
                       step="5"
                       style="margin-right: 20px"
-                      @update:model-value="handleSlider(index, item.time)"
+                      @change="handleSlider(index, item.w_value)"
                     >
                       <template #button>
                         <van-button type="primary" size="small" round style="width: 40px"
-                          >{{ item.time }}%</van-button
+                          >{{ item.w_value }}%</van-button
                         >
                       </template>
                     </van-slider>
@@ -85,6 +85,11 @@ import type {
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'
+import { saveWorkingHours } from '/@/api/home'
+import { useStore } from '/@/stores'
+import dayjs from 'dayjs'
+
+const store = useStore()
 
 /**
  * 下拉刷新
@@ -154,56 +159,91 @@ function ajaxGet(/* url */) {
  * 表单
  * **/
 interface FormData {
-  project: number | string
+  project_id: number | string
   project_name: number | string
-  time: number
+  w_value: number
 }
 const formData = ref<[FormData]>([
   {
-    project: 0,
+    project_id: 0,
     project_name: '',
-    time: 100,
+    w_value: 100,
   },
 ])
 const showPicker = ref(false)
 
 const props = defineProps({
   columns: Array,
+  defaultForm: Array,
 })
-console.log(props)
-const columns = [
-  { text: '芝麻官', value: 1 },
-  { text: '明皇帝', value: 2 },
-  { text: '妖修', value: 3 },
-  { text: '仙命诀', value: 4 },
-  { text: '混合云', value: 5 },
-]
+
+watch(
+  () => store.selectDate,
+  (val, oldVal) => {
+    const day = dayjs(val)
+    const { $D } = day
+    const propsMonthDataItem = store.getMonthData[$D]
+    if (propsMonthDataItem) {
+      const data = propsMonthDataItem.map((item) => {
+        return {
+          ...item,
+          w_value: parseInt(item.w_value * 100 + ''),
+        }
+      })
+      formData.value = data
+    } else {
+      if (props.defaultForm.length !== 0) {
+        const data = props.defaultForm.map((item) => {
+          return {
+            ...item,
+            w_value: parseInt(item.w_value * 100 + ''),
+          }
+        })
+        formData.value = data
+      }
+    }
+  },
+  {immediate: true}
+)
+
 const selectedIndex = ref(0)
 const selectedValues = ref<[number]>([0])
 const onConfirm = (obj: PickerConfirmEventParams) => {
   const { selectedOptions } = obj
-  formData.value[selectedIndex.value].project = selectedOptions[0]?.value
+  formData.value[selectedIndex.value].project_id = selectedOptions[0]?.value
   formData.value[selectedIndex.value].project_name = selectedOptions[0]?.text
   showPicker.value = false
 }
 //
 function handleShowPicker(index: number) {
-  const value = formData.value[index]?.project
+  const value = formData.value[index]?.project_id
   showPicker.value = true
   selectedValues.value = [value]
   selectedIndex.value = index
 }
 // 提交
-const onSubmit = () => {
-  showToast('表单提交')
+const onSubmit = async () => {
+  const project = formData.value.map((item) => {
+    return {
+      ...item,
+      w_value: item.w_value / 100,
+    }
+  })
+  await saveWorkingHours({
+    date: store.selectDate,
+    project,
+  })
+  const { $D } = dayjs(store.selectDate)
+  store.setMonthData($D, project)
+  showToast('提交成功')
 }
 
 // 新增
 function handleAdd() {
   formData.value.push({
-    project: 0,
+    project_id: 0,
     project_name: '',
-    time: 0,
+    w_value: 0,
   })
   finishPull()
 }
@@ -221,28 +261,28 @@ function handleDelete(index: number) {
 
 // 工时关联
 function handleSlider(index: number, value: number) {
-  // const data = unref(formData)
-  // if (data.length > 1) {
-  //   let total = 0
-  //   data.forEach((item) => {
-  //     total += item.time
-  //   })
-  //
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].time > 0) {
-  //       if (i !== index) {
-  //         data[i].time = data[i].time + (100 - total)
-  //         return false
-  //       }
-  //     }
-  //   }
-  //   formData.value.every((item, idx) => {
-  //     if (idx !== index && item.time !== 0) {
-  //       item.time = item.time - 5
-  //       return false
-  //     }
-  //   })
-  // }
+  const data = unref(formData)
+  if (data.length > 1) {
+    let total = 0
+    data.forEach((item) => {
+      total += item.w_value
+    })
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].w_value > 0) {
+        if (i !== index) {
+          data[i].w_value = data[i].w_value + (100 - total)
+          return false
+        }
+      }
+    }
+    formData.value.every((item, idx) => {
+      if (idx !== index && item.w_value !== 0) {
+        item.w_value = item.w_value - 5
+        return false
+      }
+    })
+  }
 }
 </script>
 
