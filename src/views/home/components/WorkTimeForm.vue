@@ -4,14 +4,20 @@
       <div ref="scroll" class="pullup-wrapper" :style="pullRefreshStyle">
         <div class="pullup-content">
           <div class="pullup-list">
-            <van-swipe-cell v-for="(item, index) in formData" :key="index">
+            <van-swipe-cell
+              name="swipeCell"
+              v-for="(item, index) in formData"
+              :key="index"
+              :stop-propagation="true"
+              ref="swipeCell"
+            >
               <van-cell-group :inset="true">
                 <van-field
                   size="large"
                   label-width="40px"
                   v-model="item.project_name"
                   is-link
-                  readonly
+                  :readonly="true"
                   name="project_id"
                   label="项目"
                   placeholder="点击选择项目"
@@ -19,16 +25,18 @@
                   error-message-align="right"
                   :rules="[{ required: true, message: '请选择项目' }]"
                 />
-                <van-field name="slider" label="工时" size="large">
+                <van-field name="slider" label="工时" size="large" :readonly="true">
                   <template #input>
-                    <van-button
-                      style="width: 60px"
-                      icon="minus"
-                      plain
-                      size="mini"
-                      type="primary"
-                      @click="handleSteper('minus', item)"
-                      :disabled="item.w_value === 0"
+                    <van-stepper
+                      v-model="item.w_value"
+                      min="0"
+                      max="100"
+                      step="5"
+                      integer
+                      button-size="22"
+                      :show-plus="false"
+                      :show-input="false"
+                      @change="handleLogic"
                     />
                     <van-slider
                       v-model="item.w_value"
@@ -42,14 +50,16 @@
                         >
                       </template>
                     </van-slider>
-                    <van-button
-                      style="width: 60px"
-                      icon="plus"
-                      plain
-                      size="mini"
-                      type="primary"
-                      @click="handleSteper('plus', item)"
-                      :disabled="item.w_value === 100"
+                    <van-stepper
+                      v-model="item.w_value"
+                      min="0"
+                      max="100"
+                      step="5"
+                      integer
+                      button-size="22"
+                      :show-minus="false"
+                      :show-input="false"
+                      @change="handleLogic"
                     />
                   </template>
                 </van-field>
@@ -303,7 +313,7 @@ function handleLogic() {
 
 // 步进器
 function handleSteper(type, item) {
-  event.stopPropagation()
+  console.log('按钮')
   if (type === 'plus') {
     item.w_value += 5
   } else if (type === 'minus') {
@@ -313,8 +323,10 @@ function handleSteper(type, item) {
 }
 
 function handleSwipeCell(param, e) {
-  console.log(param, e)
+  console.log('handleSwipeCell', param)
 }
+const swipeCell = ref()
+console.log(swipeCell)
 </script>
 
 <style scoped lang="less">
