@@ -1,1 +1,0 @@
-System.register(["./index-legacy.fdf3d058.js"],(function(e){"use strict";var n,t,r;return{setters:[function(e){n=e.ai,t=e.ak,r=e.ap}],execute:function(){e("default",n({},[["render",function(e,n){return t(),r("div",null,"not found")}]]))}}}));
