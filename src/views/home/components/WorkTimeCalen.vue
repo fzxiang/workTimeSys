@@ -22,7 +22,7 @@
         <van-col span="6" />
         <van-col span="12"> {{ title }} </van-col>
         <van-col span="6" style="font-size: 0; text-align: right">
-          <van-button class="link-btn" plain type="primary">工时统计</van-button>
+          <van-button class="link-btn" plain type="primary" @click="handleStats">工时统计</van-button>
         </van-col>
       </van-row>
     </template>
@@ -33,9 +33,10 @@
 import dayjs from 'dayjs'
 import type { CalendarDayItem } from 'vant'
 import { useStore } from '/@/stores'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
-
+const router = useRouter()
 const monthData = store.getMonthData
 const calendarRef = ref()
 const today = dayjs()
@@ -105,6 +106,13 @@ function handleFillStatus(scoped: CalendarDayItem) {
     res = 'van-badge-status-no'
   }
   return res
+}
+
+function handleStats() {
+  router.push({
+    path: '/stats',
+    query: { date: store.selectDate },
+  })
 }
 </script>
 

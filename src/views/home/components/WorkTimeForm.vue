@@ -1,5 +1,5 @@
 <template>
-  <van-form @submit="onSubmit">
+  <van-form @submit="onSubmit" input-align="right">
     <div class="pullup" :style="pullRefreshStyle">
       <div ref="scroll" class="pullup-wrapper" :style="pullRefreshStyle">
         <div class="pullup-content">
@@ -7,6 +7,8 @@
             <van-swipe-cell v-for="(item, index) in formData" :key="index">
               <van-cell-group :inset="true">
                 <van-field
+                  size="large"
+                  label-width="40px"
                   v-model="item.project_name"
                   is-link
                   readonly
@@ -14,14 +16,25 @@
                   label="项目"
                   placeholder="点击选择项目"
                   @click="handleShowPicker(index)"
+                  error-message-align="right"
+                  :rules="[{ required: true, message: '请选择项目' }]"
                 />
-                <van-field name="slider" label="工时">
+                <van-field name="slider" label="工时" size="large">
                   <template #input>
+                    <van-button
+                      style="width: 60px"
+                      icon="minus"
+                      plain
+                      size="mini"
+                      type="primary"
+                      @click="handleSteper('minus', item)"
+                      :disabled="item.w_value === 0"
+                    />
                     <van-slider
                       v-model="item.w_value"
                       step="5"
-                      style="margin-right: 20px"
-                      @change="handleSlider(index, item.w_value)"
+                      style="margin: 0 30px"
+                      @change="handleLogic"
                     >
                       <template #button>
                         <van-button type="primary" size="small" round style="width: 40px"
@@ -29,6 +42,15 @@
                         >
                       </template>
                     </van-slider>
+                    <van-button
+                      style="width: 60px"
+                      icon="plus"
+                      plain
+                      size="mini"
+                      type="primary"
+                      @click="handleSteper('plus', item)"
+                      :disabled="item.w_value === 100"
+                    />
                   </template>
                 </van-field>
               </van-cell-group>
@@ -61,11 +83,16 @@
       />
     </van-popup>
 
-    <van-row gutter="20" class="bottom-btn">
-      <van-col span="12">
+    <van-row gutter="10" class="bottom-btn">
+      <van-col span="10">
+        <p>
+          总工时: <span :class="totalTime === 100 ? 'success' : 'danger'">{{ totalTime }}%</span>
+        </p>
+      </van-col>
+      <van-col span="7">
         <van-button round block plain type="primary" @click="handleAdd"> 新增项目 </van-button>
       </van-col>
-      <van-col span="12">
+      <van-col span="7">
         <van-button round block type="primary" native-type="submit"> 提交 </van-button>
       </van-col>
     </van-row>
@@ -171,7 +198,7 @@ const formData = ref<[FormData]>([
   },
 ])
 const showPicker = ref(false)
-
+const totalTime = ref(100)
 const props = defineProps({
   columns: Array,
   defaultForm: Array,
@@ -203,7 +230,7 @@ watch(
       }
     }
   },
-  {immediate: true}
+  { immediate: true },
 )
 
 const selectedIndex = ref(0)
@@ -223,6 +250,10 @@ function handleShowPicker(index: number) {
 }
 // 提交
 const onSubmit = async () => {
+  if (totalTime.value !== 100) {
+    showToast('总工时必须等于100%')
+    return true
+  }
   const project = formData.value.map((item) => {
     return {
       ...item,
@@ -256,33 +287,32 @@ function handleDelete(index: number) {
   }
   selectedIndex.value = 0
   formData.value.splice(index, 1)
+  handleLogic()
   finishPull()
 }
 
-// 工时关联
-function handleSlider(index: number, value: number) {
-  const data = unref(formData)
-  if (data.length > 1) {
-    let total = 0
-    data.forEach((item) => {
-      total += item.w_value
-    })
+// 工时关联 逻辑
+function handleLogic() {
+  let total = 0
+  formData.value.forEach((item) => {
+    total += item.w_value
+  })
+  totalTime.value = total
+}
 
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].w_value > 0) {
-        if (i !== index) {
-          data[i].w_value = data[i].w_value + (100 - total)
-          return false
-        }
-      }
-    }
-    formData.value.every((item, idx) => {
-      if (idx !== index && item.w_value !== 0) {
-        item.w_value = item.w_value - 5
-        return false
-      }
-    })
+// 步进器
+function handleSteper(type, item) {
+  event.stopPropagation()
+  if (type === 'plus') {
+    item.w_value += 5
+  } else if (type === 'minus') {
+    item.w_value -= 5
   }
+  handleLogic()
+}
+
+function handleSwipeCell(param, e) {
+  console.log(param, e)
 }
 </script>
 
@@ -321,5 +351,12 @@ function handleSlider(index: number, value: number) {
     text-align: center;
     color: #999;
   }
+}
+
+.success {
+  color: var(--van-success-color);
+}
+.danger {
+  color: var(--van-danger-color);
 }
 </style>

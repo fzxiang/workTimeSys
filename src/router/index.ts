@@ -26,6 +26,12 @@ export const routes = [
     component: () => import('/@/views/login/index.vue'),
     meta: { title: '工时系统-登录' },
   },
+  {
+    path: '/stats',
+    name: 'WorkStats',
+    component: () => import('/@/views/stats/index.vue'),
+    meta: { title: '工时统计' /*, ignoreAuth: true*/ },
+  },
   { path: '/:path(.*)', component: () => import('/@/views/NotFound.vue') },
 ]
 
@@ -48,32 +54,34 @@ const hasToken = (): boolean => {
 router.beforeEach(async (_to, _from, next) => {
   NProgress.start() // start progress bar
   console.log(_to)
-  if (_to.path === '/') {
-    // 缓存有token
-    if (hasToken()) {
+  if (_to.meta.ignoreAuth) next()
+  if (_to.path === '/login') {
+    hasToken() ? next({ name: 'HomeIndex' }) : next()
+    return true
+  }
+  // 缓存有token
+  if (hasToken()) {
+    next()
+    return true
+  }
+  // 没有缓存token, 取URL
+  else {
+    const params = useUrlSearchParams('history')
+    if (params[USER_TOKEN_NAME]) {
+      console.log('user token 写入缓存', params)
+      localStore.set(STORAGE_USER_KEY, params, true)
+      await router.push({
+        path: '/',
+      })
       next()
     }
-    // 没有缓存token, 取URL
+    // URL 不存在则剔除
     else {
-      const params = useUrlSearchParams('history')
-      if (params[USER_TOKEN_NAME]) {
-        console.log('user token 写入缓存', params)
-        localStore.set(STORAGE_USER_KEY, params, true)
-        await router.push({
-          path: '/',
-        })
-        next()
-      }
-      // URL 不存在则剔除
-      else {
-        next({ name: 'LoginIndex' })
-      }
+      next({ name: 'LoginIndex' })
+      return true
     }
-  } else if (_to.path === '/login') {
-    hasToken() ? next({ name: 'HomeIndex' }) : next()
-  } else {
-    next()
   }
+  next()
 })
 
 router.afterEach(async (_to, _from) => {

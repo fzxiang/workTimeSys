@@ -11,8 +11,8 @@
         <van-button type="primary" block @click="handleSSOLogin"> SSO登录 </van-button>
       </van-col>
     </van-row>
-  </div>
   <van-switch v-model="checked" size="18px" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -46,10 +46,14 @@ function handleSSOLogin() {
   }
 }
 .vben-login {
-  display: flex;
-  align-items: center;
-  min-height: 100%;
-  overflow: hidden;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  margin-top: -50%;
+  //display: flex;
+  //align-items: center;
+  //min-height: 100%;
+  //overflow: hidden;
   //background-color: #293146;
 }
 .van-row {
