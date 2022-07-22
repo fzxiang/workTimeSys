@@ -3,8 +3,10 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
-import { useUrlSearchParams } from '@vueuse/core'
+import { useUrlSearchParams, useTitle } from '@vueuse/core'
 NProgress.configure({ showSpinner: true })
+
+const webTitle = useTitle()
 const { STORAGE_USER_KEY, STORAGE_USER_TOKEN_KEY } = setting
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
@@ -86,4 +88,5 @@ router.beforeEach(async (_to, _from, next) => {
 
 router.afterEach(async (_to, _from) => {
   NProgress.done() // finish progress bar
+  webTitle.value = _to?.meta?.title as string
 })

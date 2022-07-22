@@ -229,6 +229,7 @@ watch(
         formData.value = data
       }
     }
+    handleLogic()
   },
   { immediate: true },
 )
