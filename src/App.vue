@@ -1,16 +1,11 @@
 <template>
-  <Suspense>
-    <van-config-provider
-      :theme-vars="themeVars"
-      class="wrapper"
-      :theme="theme"
-      :style="wrapperStyle"
-    >
-      <div class="wrapper-item">
+  <van-config-provider :theme-vars="themeVars" class="wrapper" :theme="theme" :style="wrapperStyle">
+    <div class="wrapper-item">
+      <Suspense>
         <router-view />
-      </div>
-    </van-config-provider>
-  </Suspense>
+      </Suspense>
+    </div>
+  </van-config-provider>
 </template>
 
 <script setup lang="ts">

@@ -18,6 +18,7 @@ import { getMonthWorkingHours, getProjectConfig, getUserConfig } from '/@/api/ho
 import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
 import { getVersionInfo } from '/@/api/sso'
+import { onBeforeMount } from 'vue'
 import dayjs from 'dayjs'
 
 const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT } = setting
@@ -95,5 +96,14 @@ onMounted(async () => {
       defaultForm.value = workingCache
     }
   }
+})
+
+onBeforeMount(async () => {
+  const today = dayjs()
+  const monthData = await getMonthWorkingHours({
+    year: today.year(),
+    month: today.month() + 1,
+  })
+  await store.initMonthData(monthData)
 })
 </script>

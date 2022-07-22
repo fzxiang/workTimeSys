@@ -15,10 +15,10 @@ const checked = ref<boolean>(themeStore === 'dark' ? true : false)
 watch(checked, (val) => {
   if (val) {
     store.mode = 'dark'
-    localStore.set('theme', 'dark')
+    localStore.set('theme', 'dark', false)
   } else {
     store.mode = 'light'
-    localStore.set('theme', 'light')
+    localStore.set('theme', 'light', false)
   }
 })
 </script>
