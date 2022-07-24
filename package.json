@@ -29,6 +29,7 @@
     "vant": "^4.0.0-alpha.0",
     "vconsole": "^3.14.6",
     "vue": "^3.2.37",
+    "vue-horizontal-calendar": "^1.0.0",
     "vue-router": "4"
   },
   "devDependencies": {

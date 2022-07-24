@@ -1,33 +1,60 @@
 <template>
-  <div style="padding: 10px 15px">
-    <van-steps direction="vertical" :active="active">
-      <van-step v-for="item in allData" :key="item.day">
-        <div class="flex-wrap" style="margin-bottom: 10px">
-          <p>{{ item.day }} </p>
-          <p>{{ item.week }}</p>
-        </div>
-        <div class="flex-wrap" v-for="childItem in item.data" :key="childItem.w_date">
-          <h4 style="margin-bottom: 5px">
-            {{ childItem.project_name }}
-          </h4>
-          <div>
-            <van-tag plain :type="getStatusClass(childItem.status)">
-              {{ parseInt(childItem.w_value * 100 + '') }}%
-            </van-tag>
-          </div>
-        </div>
-      </van-step>
-    </van-steps>
+  <div>
+    <h4 class="week-title">{{ currentFirstDay.year + '年' + currentFirstDay.month + '月' }}</h4>
+    <vue-horizontal-calendar
+      style="margin: 0 auto"
+      swipeSpace="7"
+      :showBorderTop="true"
+      :resizeable="false"
+      @firstDayChange="firstDayChange"
+    />
   </div>
+  <van-pull-refresh style="min-height: 100vh">
+    <div style="padding: 10px 15px">
+      <van-steps direction="vertical" :active="active">
+        <van-step v-for="item in allData" :key="item.day">
+          <div class="flex-wrap" style="margin-bottom: 10px">
+            <p>{{ item.day }}</p>
+            <p>{{ item.week }}</p>
+          </div>
+          <div class="flex-wrap" v-for="childItem in item.data" :key="childItem.w_date">
+            <h4 style="margin-bottom: 5px">
+              {{ childItem.project_name }}
+            </h4>
+            <div>
+              <van-tag plain :type="getStatusClass(childItem.status)">
+                {{ parseInt(childItem.w_value * 100 + '') }}%
+              </van-tag>
+            </div>
+          </div>
+        </van-step>
+      </van-steps>
+    </div>
+  </van-pull-refresh>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { useStore } from '/@/stores'
 import dayjs from 'dayjs'
+import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
 
 const store = useStore()
 const route = useRoute()
+
+// 头部日历
+const currentFirstDay = reactive({
+  dateFormat: '',
+  year: '',
+  month: '',
+  date: '',
+  day: '',
+  timestamp: '',
+})
+function firstDayChange(day) {
+  Object.assign(currentFirstDay, day)
+}
+const getThisMondayDate = ref(new Date())
 
 const active = ref(0)
 const MAP_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
