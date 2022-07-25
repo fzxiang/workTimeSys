@@ -21,7 +21,6 @@ const themeVars = {
   badgeDotSize: '5px',
   CalendarSelectedDaySize: '44px',
   CalendarDayHeight: '50px',
-
 }
 
 const store = useStore()
@@ -54,11 +53,11 @@ watch(
     //flex: 1;
   }
 }
-@media screen and (min-width: 640px) {
-  .wrapper-item {
-    //flex: none;
-    display: inline-block;
-    width: 800px;
-  }
-}
+//@media screen and (min-width: 640px) {
+//  .wrapper-item {
+//    //flex: none;
+//    display: inline-block;
+//    width: 800px;
+//  }
+//}
 </style>
