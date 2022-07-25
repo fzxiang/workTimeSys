@@ -1,8 +1,12 @@
 <template>
   <div>
-    <vue-horizontal-calendar />
+    <vue-horizontal-calendar @change="handleChange" />
   </div>
-  <van-pull-refresh style="min-height: 100vh">
+  <van-pull-refresh
+    v-model="isLoading"
+    style="min-height: 100vh;"
+    @refresh="onRefresh"
+  >
     <div style="padding: 10px 15px">
       <van-steps direction="vertical" :active="active">
         <van-step v-for="item in allData" :key="item.day">
@@ -27,16 +31,26 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
 import { useStore } from '/@/stores'
 import dayjs from 'dayjs'
 import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
+import { getMonthWorkingHours } from '/@/api/home'
 
 const store = useStore()
-const route = useRoute()
 
 // 头部日历
-
+const pullRefreshStyle = {
+  height: window.innerHeight - 74 + 'px',
+}
+const selectdMonth = ref()
+const isLoading = ref(false)
+async function onRefresh() {
+  console.log('sdfd', selectdMonth.value)
+  await initData()
+}
+const handleChange = (value) => {
+  initData(value)
+}
 
 const active = ref(0)
 const MAP_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
@@ -45,11 +59,19 @@ const getStatusClass = (status) => {
   return status === 0 ? 'primary' : 'danger'
 }
 onMounted(() => {
-  const { date } = route.query
+  initData(new Date())
+})
+
+const monthData = ref([])
+async function initData(date) {
+  isLoading.value = true
+
   const today = dayjs(date)
   active.value = today.$D - 1
-
-  const monthData = store.getMonthData
+  const monthData = await getMonthWorkingHours({
+    year: today.year(),
+    month: today.month() + 1,
+  })
   for (let i = 0; i < today.daysInMonth(); i++) {
     const day = `${today.$y}-${today.$M + 1}-${i + 1}`
     const week = MAP_WEEK[dayjs(day).day()]
@@ -67,7 +89,9 @@ onMounted(() => {
       }
     }
   }
-})
+
+  isLoading.value = false
+}
 </script>
 
 <style lang="less" scoped>

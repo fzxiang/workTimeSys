@@ -75,12 +75,7 @@
               </template>
             </van-swipe-cell>
           </div>
-          <p v-else>未来工作日不能填写</p>
-          <!-- <div class="pullup-tips">
-            <div v-if="isPulling" class="after-trigger">
-              <span class="pullup-txt">加载中...</span>
-            </div>
-          </div> -->
+          <van-empty v-else description="未来工作日不能填写" />
         </div>
       </div>
     </div>
