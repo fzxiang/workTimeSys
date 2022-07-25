@@ -90,6 +90,7 @@
     </van-popup>
 
     <van-submit-bar
+      v-if="store.showFormData"
       disabled
       button-text="提交订单"
       :tip="totalTime !== 100 ? '总工时必须等于100%' : ''"

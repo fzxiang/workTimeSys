@@ -11,7 +11,7 @@
         <van-button type="primary" block @click="handleSSOLogin"> SSO登录 </van-button>
       </van-col>
     </van-row>
-  <van-switch v-model="checked" size="18px" />
+    <!--  <van-switch v-model="checked" size="18px" />-->
   </div>
 </template>
 

@@ -3,6 +3,7 @@
     <vue-horizontal-calendar @change="handleChange" />
   </div>
   <van-pull-refresh
+    v-show="!isNoData"
     v-model="isLoading"
     style="min-height: 100vh;"
     @refresh="onRefresh"
@@ -28,6 +29,7 @@
       </van-steps>
     </div>
   </van-pull-refresh>
+  <van-empty v-show="isNoData" description="暂无数据" />
 </template>
 
 <script setup lang="ts">
@@ -37,7 +39,7 @@ import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.
 import { getMonthWorkingHours } from '/@/api/home'
 
 const store = useStore()
-
+const isNoData = ref(false)
 // 头部日历
 const pullRefreshStyle = {
   height: window.innerHeight - 74 + 'px',
@@ -45,11 +47,15 @@ const pullRefreshStyle = {
 const selectdMonth = ref()
 const isLoading = ref(false)
 async function onRefresh() {
-  console.log('sdfd', selectdMonth.value)
   await initData()
 }
 const handleChange = (value) => {
-  initData(value)
+  if (dayjs(value).isAfter(new Date())) {
+    isNoData.value = true
+  } else {
+    isNoData.value = false
+    initData(value)
+  }
 }
 
 const active = ref(0)
