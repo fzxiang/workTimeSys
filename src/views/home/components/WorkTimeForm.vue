@@ -168,7 +168,7 @@ onMounted(() => {
     bounceTime: 800,
     mouseWheel: true,
     pullDownRefresh: {
-      threshold: 100,
+      threshold: 40,
       stop: 0,
     },
   })
@@ -176,9 +176,11 @@ onMounted(() => {
     // 向上滑动
     if (bscroll.value.movingDirectionY === 1) {
       store.setCalendar('close')
-    } else if(bscroll.value.movingDirectionY === -1) {
-      store.setCalendar('open')
     }
+  })
+  bscroll.value.on('pullingDown', (e) => {
+    store.setCalendar('open')
+    bscroll.value.finishPullDown()
   })
 })
 

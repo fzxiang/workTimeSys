@@ -105,7 +105,7 @@ function handleStats() {
   border-radius: 50%;
 }
 :deep(.van-calendar__bottom-info) {
-  bottom: 12px;
+  bottom: 4px;
 }
 :deep(.van-calendar__body) {
   //overflow: hidden;

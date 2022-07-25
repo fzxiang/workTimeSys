@@ -20,6 +20,8 @@ const wrapperStyle = {
 const themeVars = {
   badgeDotSize: '5px',
   CalendarSelectedDaySize: '44px',
+  CalendarDayHeight: '50px',
+
 }
 
 const store = useStore()
