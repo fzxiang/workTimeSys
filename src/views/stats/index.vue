@@ -1,13 +1,6 @@
 <template>
   <div>
-    <h4 class="week-title">{{ currentFirstDay.year + '年' + currentFirstDay.month + '月' }}</h4>
-    <vue-horizontal-calendar
-      style="margin: 0 auto"
-      swipeSpace="7"
-      :showBorderTop="true"
-      :resizeable="false"
-      @firstDayChange="firstDayChange"
-    />
+    <vue-horizontal-calendar />
   </div>
   <van-pull-refresh style="min-height: 100vh">
     <div style="padding: 10px 15px">
@@ -43,18 +36,7 @@ const store = useStore()
 const route = useRoute()
 
 // 头部日历
-const currentFirstDay = reactive({
-  dateFormat: '',
-  year: '',
-  month: '',
-  date: '',
-  day: '',
-  timestamp: '',
-})
-function firstDayChange(day) {
-  Object.assign(currentFirstDay, day)
-}
-const getThisMondayDate = ref(new Date())
+
 
 const active = ref(0)
 const MAP_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']

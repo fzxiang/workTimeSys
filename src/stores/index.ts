@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import dayjs from 'dayjs'
 
 export const useStore = defineStore('__store__', {
   state: () => ({
@@ -14,6 +15,10 @@ export const useStore = defineStore('__store__', {
   getters: {
     getMonthData() {
       return this.monthData
+    },
+    showFormData() {
+      const today = dayjs(new Date())
+      return today.isAfter(this.selectDate)
     },
   },
   actions: {

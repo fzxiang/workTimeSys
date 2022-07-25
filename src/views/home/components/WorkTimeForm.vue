@@ -1,9 +1,9 @@
 <template>
   <van-form @submit="onSubmit" input-align="right">
-    <div class="pullup" :style="pullRefreshStyle">
-      <div ref="scroll" class="pullup-wrapper" :style="pullRefreshStyle">
+    <div class="pullup" :class="pullRefreshClass">
+      <div ref="scroll" class="pullup-wrapper">
         <div class="pullup-content">
-          <div class="pullup-list">
+          <div v-if="store.showFormData" class="pullup-list">
             <van-swipe-cell
               name="swipeCell"
               v-for="(item, index) in formData"
@@ -75,6 +75,7 @@
               </template>
             </van-swipe-cell>
           </div>
+          <p v-else>未来工作日不能填写</p>
           <!-- <div class="pullup-tips">
             <div v-if="isPulling" class="after-trigger">
               <span class="pullup-txt">加载中...</span>
@@ -93,19 +94,38 @@
       />
     </van-popup>
 
-    <van-row gutter="10" class="bottom-btn">
-      <van-col span="10">
+    <van-submit-bar
+      disabled
+      button-text="提交订单"
+      :tip="totalTime !== 100 ? '总工时必须等于100%' : ''"
+      tip-icon="info-o"
+    >
+      <template #default>
         <p>
           总工时: <span :class="totalTime === 100 ? 'success' : 'danger'">{{ totalTime }}%</span>
         </p>
-      </van-col>
-      <van-col span="7">
-        <van-button round block plain type="primary" @click="handleAdd"> 新增项目 </van-button>
-      </van-col>
-      <van-col span="7">
-        <van-button round block type="primary" native-type="submit"> 提交 </van-button>
-      </van-col>
-    </van-row>
+      </template>
+      <template #button>
+        <van-button
+          round
+          plain
+          type="primary"
+          @click="handleAdd"
+          style="width: 120px; margin-left: 10px"
+        >
+          新增项目
+        </van-button>
+        <van-button
+          round
+          type="primary"
+          native-type="submit"
+          :disabled="!store.showFormData"
+          style="width: 120px; margin-left: 10px"
+        >
+          提交
+        </van-button>
+      </template>
+    </van-submit-bar>
   </van-form>
 </template>
 
@@ -127,46 +147,22 @@ import { useStore } from '/@/stores'
 import dayjs from 'dayjs'
 
 const store = useStore()
-
 /**
  * 下拉刷新
  * **/
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
 
-const pullRefreshStyle = ref({
-  height: window.innerHeight - 140 - 84 + 'px',
-  // background: '#eee',
-})
-
+const pullRefreshClass = ref('pull-refresh-open')
 watchEffect(() => {
   if (store.calendar === 'close') {
-    pullRefreshStyle.value = {
-      height: window.innerHeight - 140 - 84 + 'px',
-    }
+    pullRefreshClass.value = 'pull-refresh-close'
   } else {
-    pullRefreshStyle.value = {
-      height: window.innerHeight - 500 - 84 + 'px',
-    }
+    pullRefreshClass.value = 'pull-refresh-open'
   }
-  finishPull()
+  // finishPull()
 })
-// watch(
-//   () => store.calendar,
-//   (value) => {
-//     if (value === 'close') {
-//       console.log(value)
-//       pullRefreshStyle.value = {
-//         height: window.innerHeight - 130 - 84 + 'px',
-//       }
-//     } else {
-//       pullRefreshStyle.value = {
-//         height: window.innerHeight - 500 - 84 + 'px',
-//       }
-//     }
-//     finishPull()
-//   },
-// )
+
 const scroll = ref()
 const bscroll = ref()
 const isPulling = ref(false)
@@ -180,27 +176,20 @@ onMounted(() => {
       stop: 0,
     },
   })
-  // bscroll.value.on('pullingDown', pullingDownHandler)
-  // bscroll.value.on('scroll', scrollHandler)
-  bscroll.value.on('scrollEnd', (e) => {
+  bscroll.value.on('scrollStart', (e) => {
     // 向上滑动
-    if (e.y < 0) {
+    if (bscroll.value.movingDirectionY === 1) {
       store.setCalendar('close')
-    } else {
+    } else if(bscroll.value.movingDirectionY === -1) {
       store.setCalendar('open')
     }
-    console.log('scrollEnd', e)
   })
-  // bscroll.value.on('scroll', pullingHandler)
 })
 
 function finishPull() {
   nextTick(() => {
     bscroll.value.refresh()
   })
-}
-function crollHandler(pos) {
-  console.log(pos.y)
 }
 async function pullingDownHandler() {
   isPulling.value = true
@@ -358,8 +347,6 @@ function handleSteper(type, item) {
 function handleSwipeCell(param, e) {
   console.log('handleSwipeCell', param)
 }
-const swipeCell = ref()
-console.log(swipeCell)
 </script>
 
 <style scoped lang="less">
@@ -391,12 +378,20 @@ console.log(swipeCell)
 .van-form {
   padding-top: 10px;
 }
+
 .pullup {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 140px;
+  bottom: 50px;
+  //padding: 10px 0 ;
+  background: var(--van-background);
   .pullup-wrapper {
+    height: 100%;
     overflow: hidden;
   }
   .pullup-list-item {
-    padding: 10px 0;
     list-style: none;
   }
   .pullup-tips {
@@ -404,6 +399,12 @@ console.log(swipeCell)
     text-align: center;
     color: #999;
   }
+}
+.pull-refresh-open {
+  top: 300px;
+}
+.pull-refresh-close {
+  top: 140px;
 }
 
 .success {

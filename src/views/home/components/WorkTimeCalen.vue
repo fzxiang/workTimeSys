@@ -1,32 +1,27 @@
 <template>
-  <van-calendar
-    title="工时日历"
-    ref="calendarRef"
-    :show-title="false"
-    :poppable="false"
-    :show-confirm="false"
-    :show-mark="false"
-    :safe-area-inset-bottom="false"
-    @month-show="onMonthShow"
-    :style="calendarStyle"
-    :min-date="minData"
-    color="#1e80ff"
-    :formatter="formatter"
-    @select="onSelect"
-  >
-    <template #bottom-info="scoped">
-      <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
-    </template>
-    <template #subtitle>
-      <van-row>
-        <van-col span="6" />
-        <van-col span="12"> {{ title }} </van-col>
-        <van-col span="6" style="font-size: 0; text-align: right">
-          <van-button class="link-btn" plain type="primary" @click="handleStats">工时统计</van-button>
-        </van-col>
-      </van-row>
-    </template>
-  </van-calendar>
+  <div>
+    <van-calendar
+      title="工时日历"
+      ref="calendarRef"
+      :show-title="false"
+      :poppable="false"
+      :show-confirm="false"
+      :show-mark="false"
+      :safe-area-inset-bottom="false"
+      @month-show="onMonthShow"
+      style="height: 300px"
+      :class="calendarClass"
+      :min-date="minData"
+      color="#1e80ff"
+      :formatter="formatter"
+      @select="onSelect"
+    >
+      <template #bottom-info="scoped">
+        <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
+      </template>
+    </van-calendar>
+    <van-button class="link-btn" plain type="primary" @click="handleStats">工时统计</van-button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -41,15 +36,14 @@ const calendarRef = ref()
 const today = dayjs()
 store.selectDate = today.format('YYYY-MM-DD')
 const minData = new Date(2022, 0)
-const calendarStyle = ref({ height: '140px' })
-
+const calendarClass = ref('calendarClose')
 onMounted(() => {
   watchEffect(() => {
     if (store.calendar === 'close') {
-      calendarStyle.value = { height: '140px' }
-      calendarRef.value.scrollToDate(new Date())
+      calendarRef.value.scrollToDate(new Date(store.selectDate))
+      calendarClass.value = 'calendarClose'
     } else {
-      calendarStyle.value = { height: '500px' }
+      calendarClass.value = ''
     }
   })
 })
@@ -67,14 +61,16 @@ function formatter(day: any) {
   return day
 }
 
-// 标题展示
-const title = ref()
-function onMonthShow(obj: { date: Date; title: string }) {
-  title.value = obj.title
-}
+// // 标题展示
+// const title = ref()
+// function onMonthShow(obj: { date: Date; title: string }) {
+//   console.log(obj)
+//   title.value = obj.title
+// }
 
 // 日期选择
 function onSelect(value: Date | Date[]) {
+  console.log(value)
   store.selectDate = dayjs(value).format('YYYY-MM-DD')
 }
 
@@ -148,7 +144,16 @@ function handleStats() {
 :deep(.van-calendar__body) {
   //overflow: hidden;
 }
+.calendarClose {
+  :deep(.van-calendar__body) {
+    overflow: hidden;
+  }
+}
+
 .link-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
   border: none;
   font-weight: normal;
 }
