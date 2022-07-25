@@ -156,7 +156,7 @@ watchEffect(() => {
   } else {
     pullRefreshClass.value = 'pull-refresh-open'
   }
-  // finishPull()
+  finishPull()
 })
 
 const scroll = ref()

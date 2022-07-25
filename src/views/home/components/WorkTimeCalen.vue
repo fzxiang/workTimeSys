@@ -8,7 +8,6 @@
       :show-confirm="false"
       :show-mark="false"
       :safe-area-inset-bottom="false"
-      @month-show="onMonthShow"
       style="height: 300px"
       :class="calendarClass"
       :min-date="minData"
@@ -57,16 +56,8 @@ function formatter(day: any) {
   if (dayjs(date).isSame(today, 'day')) {
     day.text = '今天'
   }
-
   return day
 }
-
-// // 标题展示
-// const title = ref()
-// function onMonthShow(obj: { date: Date; title: string }) {
-//   console.log(obj)
-//   title.value = obj.title
-// }
 
 // 日期选择
 function onSelect(value: Date | Date[]) {
@@ -75,32 +66,7 @@ function onSelect(value: Date | Date[]) {
 }
 
 const monthData = store.getMonthData
-console.log('monthData', monthData)
 
-const statusClass = computed(() => {
-  const monthData = store.getMonthData
-
-  const { date } = scoped
-  const day = dayjs(date)
-  const { $D } = day
-  let res = ''
-  // 未来日期不标记📌
-  if (day.isAfter(today, 'day')) {
-    res = 'van-badge-status-none'
-  }
-  // 已填写
-  else if (monthData[$D]) {
-    const { status } = monthData[$D][0]
-    if (status === 0) {
-      res = 'van-badge-status-ok'
-    }
-  }
-  // 未填写
-  else {
-    res = 'van-badge-status-no'
-  }
-  return res
-})
 function handleFillStatus(scoped: CalendarDayItem) {
   const monthData = store.getMonthData
 
