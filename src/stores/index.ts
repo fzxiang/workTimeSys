@@ -1,4 +1,4 @@
-import { defineStore, createPinia } from 'pinia'
+import { defineStore } from 'pinia'
 
 export const useStore = defineStore('__store__', {
   state: () => ({
@@ -8,6 +8,7 @@ export const useStore = defineStore('__store__', {
     workingVersionExpire: false,
     projectVersionExpire: false,
     monthData: {},
+    calendar: 'close',
   }),
   persist: true,
   getters: {
@@ -21,6 +22,9 @@ export const useStore = defineStore('__store__', {
     },
     initMonthData(obj): void {
       this.monthData = obj
+    },
+    setCalendar(value: string) {
+      this.calendar = value
     },
   },
 })

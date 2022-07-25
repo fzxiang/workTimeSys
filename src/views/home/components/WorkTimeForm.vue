@@ -133,10 +133,40 @@ const store = useStore()
  * **/
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
+
 const pullRefreshStyle = ref({
-  height: window.innerHeight - 130 - 84 + 'px',
+  height: window.innerHeight - 140 - 84 + 'px',
   // background: '#eee',
 })
+
+watchEffect(() => {
+  if (store.calendar === 'close') {
+    pullRefreshStyle.value = {
+      height: window.innerHeight - 140 - 84 + 'px',
+    }
+  } else {
+    pullRefreshStyle.value = {
+      height: window.innerHeight - 500 - 84 + 'px',
+    }
+  }
+  finishPull()
+})
+// watch(
+//   () => store.calendar,
+//   (value) => {
+//     if (value === 'close') {
+//       console.log(value)
+//       pullRefreshStyle.value = {
+//         height: window.innerHeight - 130 - 84 + 'px',
+//       }
+//     } else {
+//       pullRefreshStyle.value = {
+//         height: window.innerHeight - 500 - 84 + 'px',
+//       }
+//     }
+//     finishPull()
+//   },
+// )
 const scroll = ref()
 const bscroll = ref()
 const isPulling = ref(false)
@@ -151,16 +181,19 @@ onMounted(() => {
     },
   })
   // bscroll.value.on('pullingDown', pullingDownHandler)
-  bscroll.value.on('scroll', scrollHandler)
+  // bscroll.value.on('scroll', scrollHandler)
   bscroll.value.on('scrollEnd', (e) => {
+    // 向上滑动
+    if (e.y < 0) {
+      store.setCalendar('close')
+    } else {
+      store.setCalendar('open')
+    }
     console.log('scrollEnd', e)
   })
   // bscroll.value.on('scroll', pullingHandler)
 })
 
-function scrollHandler(pos) {
-  // console.log(pos)
-}
 function finishPull() {
   nextTick(() => {
     bscroll.value.refresh()
@@ -330,6 +363,9 @@ console.log(swipeCell)
 </script>
 
 <style scoped lang="less">
+.van-form * {
+  transition: all 0.3s ease;
+}
 .delete-button {
   height: 100%;
 }
@@ -338,6 +374,10 @@ console.log(swipeCell)
 }
 .bottom-btn {
   background: var(--van-background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 15px;
 }
 .van-cell-group {
