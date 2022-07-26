@@ -26,19 +26,18 @@ const checkStorageVersion = async () => {
   const { working_version, project_version } = await getVersionInfo()
 
   // 默认配置过期
-  if (cacheStore.workingVersion) {
+  if (cacheStore.getWorkingVersion) {
     cacheStore.setWorkingVersionExpire(cacheStore.workingVersion < working_version)
   } else {
     cacheStore.setWorkingVersionExpire(true)
   }
 
   // 项目过期
-  if (cacheStore.projectVersion) {
+  if (cacheStore.getProjectVersion) {
     cacheStore.setProjectVersionExpire(cacheStore.projectVersion < project_version)
   } else {
     cacheStore.setProjectVersionExpire(true)
   }
-
   return { working_version, project_version }
 }
 

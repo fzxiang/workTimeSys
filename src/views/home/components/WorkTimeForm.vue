@@ -93,12 +93,13 @@
       v-if="appStore.showFormData"
       disabled
       button-text="提交订单"
-      :tip="totalTime !== 100 ? '总工时必须等于100%' : ''"
-      tip-icon="info-o"
     >
       <template #default>
         <p>
-          总工时: <span :class="totalTime === 100 ? 'success' : 'danger'">{{ totalTime }}%</span>
+          总工时:
+          <span :class="!checkTotal > 0 ? 'success' : 'danger'"
+            >{{ totalTime }}%</span
+          >
         </p>
       </template>
       <template #button>
@@ -257,9 +258,19 @@ function handleShowPicker(index: number) {
   selectedIndex.value = index
 }
 // 提交
+const checkSubmit = (value) => {
+  return value || value !== 0
+}
+const checkTotal = computed(() => {
+  let res = true
+  if (totalTime.value === 100 || totalTime.value === 0) {
+    res = false
+  }
+  return res
+})
 const onSubmit = async () => {
-  if (totalTime.value !== 100) {
-    showToast('总工时必须等于100%')
+  if (!checkTotal) {
+    showToast('总工时必须等于100%或者0%')
     return true
   }
   const projectSet = new Set()
@@ -372,7 +383,7 @@ function handleSwipeCell(param, e) {
   left: 0;
   right: 0;
   top: 140px;
-  bottom: 50px;
+  bottom: 80px;
   //padding: 10px 0 ;
   background: var(--van-background);
   .pullup-wrapper {

@@ -21,17 +21,19 @@ export const useAppStore = defineStore(`__app__`, {
     selectDate: new Date(),
     calendar: 'close',
   }),
-  getters: {},
+  getters: {
+    showFormData() {
+      const today = dayjs(new Date())
+      const curDay = dayjs(this.selectDate)
+      return today.isAfter(curDay)
+    },
+  },
   actions: {
     setCalendar(value: string) {
       this.calendar = value
     },
     setSelectData(value: Date) {
       this.selectDate = value
-    },
-    showFormData() {
-      const today = dayjs(new Date())
-      return today.isAfter(this.selectDate)
     },
   },
 })
