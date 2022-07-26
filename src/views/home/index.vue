@@ -47,13 +47,7 @@ onMounted(async () => {
   // 项目配置 校验版本过期
   if (cacheStore.projectVersionExpire) {
     const { project, project_version } = await getProjectConfig()
-    const projectData = project.map((item) => {
-      return {
-        text: item.name,
-        value: item.id,
-      }
-    })
-    cacheStore.setProject(projectData)
+    cacheStore.setProject(project)
     cacheStore.setProjectVersion(project_version)
     cacheStore.setProjectVersionExpire(false)
   }

@@ -5,7 +5,6 @@ import { localStore } from '/@/utils/local-storage'
 
 import setting from '/@/setting/projectSetting'
 import { showToast, showNotify } from 'vant'
-import { router } from '/@/router'
 
 const { STORAGE_USER_TOKEN_KEY, REQUEST_TOKEN_KEY, EXPIRE_LOGIN_CODE, STORAGE_USER_KEY } = setting
 // 这里是用于设定请求后端时，所用的 Token KEY
@@ -80,13 +79,14 @@ const responseHandler = (
       return res
     case EXPIRE_LOGIN_CODE:
       localStore.remove(STORAGE_USER_KEY)
-      router
-        .push({
-          path: '/login',
-        })
-        .then((r) => {
-          console.log(r)
-        })
+      location.pathname = '/login'
+      // router
+      //   .push({
+      //     path: '/login',
+      //   })
+      //   .then((r) => {
+      //     console.log(r)
+      //   })
       return Promise.reject()
     default:
       return res

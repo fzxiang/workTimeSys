@@ -1,8 +1,14 @@
 import { defineStore } from 'pinia'
 import dayjs from 'dayjs'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+
 import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
+import { useAppStoreWithOut } from './app'
 
+dayjs.extend(isSameOrBefore)
+dayjs.extend(isSameOrAfter)
 const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT } = setting
 
 interface Project {
@@ -51,7 +57,21 @@ export const useCacheStore = defineStore(`__cache__`, {
       return this.working.length > 0 ? this.working : localStore.get(GET_WORKING())
     },
     getProject() {
-      return this.projectVersion.length > 0 ? this.project : localStore.get(GET_PROJECT())
+      const appStore = useAppStoreWithOut()
+      const project = this.project.length > 0 ? this.project : localStore.get(GET_PROJECT())
+      const curDate = dayjs(appStore.selectDate)
+
+      const filter = project.filter((item) => {
+        const start = dayjs(item.start_time)
+        const end = dayjs(item.close_time)
+        return curDate.isSameOrAfter(start) && curDate.isSameOrBefore(end)
+      })
+      return filter.map((item) => {
+        return {
+          value: item.id,
+          text: item.name,
+        }
+      })
     },
     getWorkingVersion() {
       return this.workingVersion ? this.workingVersion : localStore.get(GET_WORKING_VERSION())
