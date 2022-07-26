@@ -1,0 +1,1 @@
+System.register(["./index-legacy.f14941fb.js"],(function(e){"use strict";var n,t,r;return{setters:[function(e){n=e.a4,t=e.a7,r=e.ac}],execute:function(){e("default",n({},[["render",function(e,n){return t(),r("div",null,"not found")}]]))}}}));
