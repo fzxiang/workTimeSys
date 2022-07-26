@@ -99,11 +99,11 @@ onMounted(async () => {
 })
 
 onBeforeMount(async () => {
-  const today = dayjs()
-  const monthData = await getMonthWorkingHours({
-    year: today.year(),
-    month: today.month() + 1,
-  })
-  await store.initMonthData(monthData)
+  // const today = dayjs()
+  // const monthData = await getMonthWorkingHours({
+  //   year: today.year(),
+  //   month: today.month() + 1,
+  // })
+  // await store.initMonthData(monthData)
 })
 </script>

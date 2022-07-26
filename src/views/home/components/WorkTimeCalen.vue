@@ -14,6 +14,7 @@
       color="#1e80ff"
       :formatter="formatter"
       @select="onSelect"
+      @month-show="onMonthShow"
     >
       <template #bottom-info="scoped">
         <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
@@ -28,6 +29,7 @@ import dayjs from 'dayjs'
 import type { CalendarDayItem } from 'vant'
 import { useStore } from '/@/stores'
 import { useRouter } from 'vue-router'
+import { getMonthWorkingHours } from '/@/api/home'
 
 const store = useStore()
 const router = useRouter()
@@ -36,6 +38,15 @@ const today = dayjs()
 store.selectDate = today.format('YYYY-MM-DD')
 const minData = new Date(2022, 0)
 const calendarClass = ref('calendarClose')
+
+const onMonthShow = async (obj) => {
+  const today = dayjs(obj.date)
+  const monthData = await getMonthWorkingHours({
+    year: today.year(),
+    month: today.month() + 1,
+  })
+  await store.setMonthData(today.format('YYYY-MM'), monthData)
+}
 onMounted(() => {
   watchEffect(() => {
     if (store.calendar === 'close') {
@@ -65,13 +76,13 @@ function onSelect(value: Date | Date[]) {
   store.selectDate = dayjs(value).format('YYYY-MM-DD')
 }
 
-const monthData = store.getMonthData
-
 function handleFillStatus(scoped: CalendarDayItem) {
-  const monthData = store.getMonthData
-
   const { date } = scoped
   const day = dayjs(date)
+  const month = day.format('YYYY-MM')
+  const monthData = store.getMonthData[month]
+
+
   const { $D } = day
   let res = ''
   // 未来日期不标记📌
@@ -79,7 +90,7 @@ function handleFillStatus(scoped: CalendarDayItem) {
     res = 'van-badge-status-none'
   }
   // 已填写
-  else if (monthData[$D]) {
+  else if (monthData && monthData[$D]) {
     const { status } = monthData[$D][0]
     if (status === 0) {
       res = 'van-badge-status-ok'

@@ -289,15 +289,21 @@ const onSubmit = async () => {
     return {
       ...item,
       w_value: item.w_value / 100,
+      status: 0,
     }
   })
-  await saveWorkingHours({
+  const res = await saveWorkingHours({
     date: store.selectDate,
     project,
   })
-  const { $D } = dayjs(store.selectDate)
-  store.setMonthData($D, project)
-  showToast('提交成功')
+  if(res.code === 0) {
+    const day = dayjs(store.selectDate)
+    const month = day.format('YYYY-MM')
+    store.setMonthDayData(month, day.date(), project)
+    showToast(res.msg)
+  } else {
+    showToast(res.msg)
+  }
 }
 
 // 新增
