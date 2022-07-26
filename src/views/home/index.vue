@@ -1,7 +1,7 @@
 <template>
   <div>
     <work-time-calen />
-    <WorkTimeForm :columns="columns" :defaultForm="defaultForm" />
+    <WorkTimeForm :columns="columns" :defaultForm="defaultForm" @change="updateDefaultForm" />
   </div>
 </template>
 
@@ -63,6 +63,10 @@ interface DefaultForm {
   w_value?: number
 }
 const defaultForm = ref<any>([])
+
+const updateDefaultForm = (data) => {
+  defaultForm.value = data
+}
 onMounted(async () => {
   await checkStorageVersion()
   // 项目配置 校验版本

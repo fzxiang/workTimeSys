@@ -48,6 +48,10 @@ const onMonthShow = async (obj) => {
   await store.setMonthData(today.format('YYYY-MM'), monthData)
 }
 onMounted(() => {
+  nextTick(() => {
+    calendarRef.value.scrollToDate(new Date())
+  })
+
   watchEffect(() => {
     if (store.calendar === 'close') {
       calendarRef.value.scrollToDate(new Date(store.selectDate))
@@ -81,7 +85,6 @@ function handleFillStatus(scoped: CalendarDayItem) {
   const day = dayjs(date)
   const month = day.format('YYYY-MM')
   const monthData = store.getMonthData[month]
-
 
   const { $D } = day
   let res = ''

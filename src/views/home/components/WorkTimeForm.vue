@@ -130,10 +130,6 @@ import { ref, onMounted, nextTick, defineProps } from 'vue'
 import { showToast } from 'vant'
 import type {
   PickerConfirmEventParams,
-  // PickerProps,
-  // PickerColumn,
-  // PickerOption,
-  // PullRefreshProps,
 } from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
@@ -233,13 +229,18 @@ const props = defineProps({
   columns: Array,
   defaultForm: Array,
 })
+interface Emits {
+  (e: 'change', newValue: any): void
+}
+const emits = defineEmits<Emits>()
 
 watch(
   () => store.selectDate,
   (val, oldVal) => {
     const day = dayjs(val)
+    const month = day.format('YYYY-MM')
     const { $D } = day
-    const propsMonthDataItem = store.getMonthData[$D]
+    const propsMonthDataItem = store.getMonthData[month][$D]
     if (propsMonthDataItem) {
       const data = propsMonthDataItem.map((item) => {
         return {
@@ -308,6 +309,7 @@ const onSubmit = async () => {
     const day = dayjs(store.selectDate)
     const month = day.format('YYYY-MM')
     store.setMonthDayData(month, day.date(), project)
+    emits('change', project)
     showToast('提交成功')
   }
 }
