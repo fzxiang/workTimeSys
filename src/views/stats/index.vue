@@ -33,12 +33,14 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from '/@/stores'
 import dayjs from 'dayjs'
 import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
 import { getMonthWorkingHours } from '/@/api/home'
+import { useCacheStore } from '/@/store/modules/cache'
+import { useAppStore } from '/@/store/modules/app'
 
-const store = useStore()
+// const cacheStore = useCacheStore()
+// const appStore = useAppStore()
 const isNoData = ref(false)
 // 头部日历
 const isLoading = ref(false)

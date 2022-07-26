@@ -10,12 +10,6 @@ const webTitle = useTitle()
 const { STORAGE_USER_KEY, STORAGE_USER_TOKEN_KEY } = setting
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
-  // {
-  //   path: '/',
-  //   redirect: '/home',
-  //   component: () => import('/@/views/CheckToken.vue'),
-  //   meta: { title: '工时系统' },
-  // },
   {
     path: '/',
     name: 'HomeIndex',

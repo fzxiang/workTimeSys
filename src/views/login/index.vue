@@ -17,18 +17,18 @@
 
 <script setup lang="ts">
 import { localStore } from '/@/utils/local-storage'
-import { useStore } from '/@/stores'
+import { useAppStore } from '/@/store/modules/app'
 
 const themeStore = localStore.get('theme')
 const checked = ref<boolean>(themeStore === 'dark')
-const store = useStore()
+const appStore = useAppStore()
 
 watch(checked, (val) => {
   if (val) {
-    store.mode = 'dark'
+    appStore.mode = 'dark'
     localStore.set('theme', 'dark', false)
   } else {
-    store.mode = 'light'
+    appStore.mode = 'light'
     localStore.set('theme', 'light', false)
   }
 })

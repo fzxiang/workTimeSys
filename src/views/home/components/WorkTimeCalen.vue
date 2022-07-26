@@ -27,15 +27,16 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import type { CalendarDayItem } from 'vant'
-import { useStore } from '/@/stores'
+import { useCacheStore } from '/@/store/modules/cache'
+import { useAppStore } from '/@/store/modules/app'
 import { useRouter } from 'vue-router'
 import { getMonthWorkingHours } from '/@/api/home'
 
-const store = useStore()
+const appStore = useAppStore()
+const cacheStore = useCacheStore()
 const router = useRouter()
 const calendarRef = ref()
 const today = dayjs()
-store.selectDate = today.format('YYYY-MM-DD')
 const minData = new Date(2022, 0)
 const calendarClass = ref('calendarClose')
 
@@ -45,7 +46,7 @@ const onMonthShow = async (obj) => {
     year: today.year(),
     month: today.month() + 1,
   })
-  await store.setMonthData(today.format('YYYY-MM'), monthData)
+  await cacheStore.setMonthData(today.format('YYYY-MM'), monthData)
 }
 onMounted(() => {
   nextTick(() => {
@@ -53,8 +54,8 @@ onMounted(() => {
   })
 
   watchEffect(() => {
-    if (store.calendar === 'close') {
-      calendarRef.value.scrollToDate(new Date(store.selectDate))
+    if (appStore.calendar === 'close') {
+      calendarRef.value.scrollToDate(appStore.selectDate)
       calendarClass.value = 'calendarClose'
     } else {
       calendarClass.value = ''
@@ -75,18 +76,17 @@ function formatter(day: any) {
 }
 
 // 日期选择
-function onSelect(value: Date | Date[]) {
-  console.log(value)
-  store.selectDate = dayjs(value).format('YYYY-MM-DD')
+function onSelect(value: Date) {
+  appStore.setSelectData(value)
 }
 
 function handleFillStatus(scoped: CalendarDayItem) {
   const { date } = scoped
   const day = dayjs(date)
   const month = day.format('YYYY-MM')
-  const monthData = store.getMonthData[month]
+  const monthData = cacheStore.getMonthData[month]
 
-  const { $D } = day
+  const $D = day.date()
   let res = ''
   // 未来日期不标记📌
   if (day.isAfter(today, 'day')) {
@@ -109,7 +109,7 @@ function handleFillStatus(scoped: CalendarDayItem) {
 function handleStats() {
   router.push({
     path: '/stats',
-    query: { date: store.selectDate },
+    // query: { date: store.selectDate },
   })
 }
 </script>

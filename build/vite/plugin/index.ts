@@ -65,7 +65,7 @@ export function createVitePlugins(viteEnv, isBuild) {
 
     viteVConsole({
       entry: [path.resolve('src/main.ts')],
-      localEnabled: !isBuild,
+      localEnabled: !!isBuild,
       enabled: false,
       config: {
         maxLogNumber: 1000,

@@ -3,7 +3,7 @@
     <div class="pullup" :class="pullRefreshClass">
       <div ref="scroll" class="pullup-wrapper">
         <div class="pullup-content">
-          <div v-if="store.showFormData" class="pullup-list">
+          <div v-if="appStore.showFormData" class="pullup-list">
             <van-swipe-cell
               name="swipeCell"
               v-for="(item, index) in formData"
@@ -83,14 +83,14 @@
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         v-model="selectedValues"
-        :columns="props.columns"
+        :columns="cacheStore.getProject"
         @confirm="onConfirm"
         @cancel="showPicker = false"
       />
     </van-popup>
 
     <van-submit-bar
-      v-if="store.showFormData"
+      v-if="appStore.showFormData"
       disabled
       button-text="提交订单"
       :tip="totalTime !== 100 ? '总工时必须等于100%' : ''"
@@ -115,7 +115,7 @@
           round
           type="primary"
           native-type="submit"
-          :disabled="!store.showFormData"
+          :disabled="!appStore.showFormData"
           style="width: 120px; margin-left: 10px"
         >
           提交
@@ -126,19 +126,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, defineProps } from 'vue'
+import type { PickerConfirmEventParams } from 'vant'
+// import { ref, onMounted, nextTick, defineProps } from 'vue'
 import { showToast } from 'vant'
-import type {
-  PickerConfirmEventParams,
-} from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'
 import { saveWorkingHours } from '/@/api/home'
-import { useStore } from '/@/stores'
 import dayjs from 'dayjs'
+import { useCacheStore } from '/@/store/modules/cache'
+import { useAppStore } from '/@/store/modules/app'
 
-const store = useStore()
+const cacheStore = useCacheStore()
+const appStore = useAppStore()
+
 /**
  * 下拉刷新
  * **/
@@ -147,7 +148,7 @@ BScroll.use(PullDown)
 
 const pullRefreshClass = ref('pull-refresh-open')
 watchEffect(() => {
-  if (store.calendar === 'close') {
+  if (appStore.calendar === 'close') {
     pullRefreshClass.value = 'pull-refresh-close'
   } else {
     pullRefreshClass.value = 'pull-refresh-open'
@@ -171,11 +172,11 @@ onMounted(() => {
   bscroll.value.on('scrollStart', (e) => {
     // 向上滑动
     if (bscroll.value.movingDirectionY === 1) {
-      store.setCalendar('close')
+      appStore.setCalendar('close')
     }
   })
   bscroll.value.on('pullingDown', (e) => {
-    store.setCalendar('open')
+    appStore.setCalendar('open')
     bscroll.value.finishPullDown()
   })
 })
@@ -191,21 +192,6 @@ async function pullingDownHandler() {
   // await requestData()
 
   finishPull()
-}
-async function requestData() {
-  try {
-    const newData = await ajaxGet(/* url */)
-  } catch (err) {
-    // handle err
-    console.log(err)
-  }
-}
-function ajaxGet(/* url */) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(20)
-    }, 1000)
-  })
 }
 
 /**
@@ -225,39 +211,29 @@ const formData = ref<[FormData]>([
 ])
 const showPicker = ref(false)
 const totalTime = ref(100)
-const props = defineProps({
-  columns: Array,
-  defaultForm: Array,
-})
-interface Emits {
-  (e: 'change', newValue: any): void
-}
-const emits = defineEmits<Emits>()
 
 watch(
-  () => store.selectDate,
+  () => appStore.selectDate,
   (val, oldVal) => {
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
-    const { $D } = day
-    const propsMonthDataItem = store.getMonthData[month][$D]
-    if (propsMonthDataItem) {
-      const data = propsMonthDataItem.map((item) => {
+    const $D = day.date()
+    const propsMonthDataItem = cacheStore.getMonthData[month]
+    if (propsMonthDataItem && propsMonthDataItem[$D]) {
+      formData.value = propsMonthDataItem[$D].map((item) => {
         return {
           ...item,
           w_value: parseInt(item.w_value * 100 + ''),
         }
       })
-      formData.value = data
     } else {
-      if (props.defaultForm.length !== 0) {
-        const data = props.defaultForm.map((item) => {
+      if (cacheStore.working.length !== 0) {
+        formData.value = cacheStore.working.map((item) => {
           return {
             ...item,
             w_value: parseInt(item.w_value * 100 + ''),
           }
         })
-        formData.value = data
       }
     }
     handleLogic()
@@ -275,7 +251,7 @@ const onConfirm = (obj: PickerConfirmEventParams) => {
 }
 //
 function handleShowPicker(index: number) {
-  const value = formData.value[index]?.project_id
+  const value = formData.value[index]?.project_id as number
   showPicker.value = true
   selectedValues.value = [value]
   selectedIndex.value = index
@@ -300,16 +276,16 @@ const onSubmit = async () => {
     return true
   }
   const res = await saveWorkingHours({
-    date: store.selectDate,
+    date: dayjs(appStore.selectDate).format('YYYY-MM-DD'),
     project,
   })
   if (res && res.code !== 0) {
     showToast(res.msg)
   } else {
-    const day = dayjs(store.selectDate)
+    const day = dayjs(appStore.selectDate)
     const month = day.format('YYYY-MM')
-    store.setMonthDayData(month, day.date(), project)
-    emits('change', project)
+    cacheStore.setMonthDayData(month, day.date(), project)
+    cacheStore.setWorking(project)
     showToast('提交成功')
   }
 }

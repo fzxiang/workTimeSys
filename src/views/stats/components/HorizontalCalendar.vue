@@ -104,9 +104,11 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { useStore } from '/@/stores'
+// import { useCacheStore } from '/@/store/modules/cache'
+// import { useAppStore } from '/@/store/modules/app'
 
-const store = useStore()
+// const cacheStore = useCacheStore()
+// const appStore = useAppStore()
 const today = dayjs(new Date())
 
 const date = ref([])

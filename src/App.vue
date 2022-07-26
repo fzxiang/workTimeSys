@@ -12,7 +12,7 @@
 import { watch, ref } from 'vue'
 import type { ConfigProviderTheme } from 'vant'
 import { localStore } from '/@/utils/local-storage'
-import { useStore } from '/@/stores'
+import { useAppStore } from '/@/store/modules/app'
 
 const wrapperStyle = {
   height: window.innerHeight + 'px',
@@ -23,9 +23,9 @@ const themeVars = {
   CalendarDayHeight: '50px',
 }
 
-const store = useStore()
+const appStore = useAppStore()
 const theme = ref<ConfigProviderTheme>('light')
-const mode = computed(() => store.mode)
+const mode = computed(() => appStore.mode)
 
 watch(
   mode,
