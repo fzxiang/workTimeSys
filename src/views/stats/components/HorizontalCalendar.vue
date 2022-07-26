@@ -107,7 +107,7 @@ import dayjs from 'dayjs'
 import { useStore } from '/@/stores'
 
 const store = useStore()
-const today = dayjs(store.selectDate)
+const today = dayjs(new Date())
 
 const date = ref([])
 const title = ref()

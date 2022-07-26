@@ -5,7 +5,7 @@
   <van-pull-refresh
     v-show="!isNoData"
     v-model="isLoading"
-    style="min-height: 100vh;"
+    style="min-height: 100vh"
     @refresh="onRefresh"
   >
     <div style="padding: 10px 15px">
@@ -41,15 +41,13 @@ import { getMonthWorkingHours } from '/@/api/home'
 const store = useStore()
 const isNoData = ref(false)
 // 头部日历
-const pullRefreshStyle = {
-  height: window.innerHeight - 74 + 'px',
-}
-const selectdMonth = ref()
 const isLoading = ref(false)
+const currentDate = ref(new Date())
 async function onRefresh() {
-  await initData()
+  await initData(currentDate.value)
 }
 const handleChange = (value) => {
+  currentDate.value = value
   if (dayjs(value).isAfter(new Date())) {
     isNoData.value = true
   } else {
@@ -68,18 +66,24 @@ onMounted(() => {
   initData(new Date())
 })
 
-const monthData = ref([])
 async function initData(date) {
   isLoading.value = true
 
-  const today = dayjs(date)
-  active.value = today.$D - 1
+  const today = dayjs(new Date())
+  const curDay = dayjs(date)
+  if (today.month() === curDay.month()) {
+    active.value = today.date() - 1
+  } else if (today.isAfter(curDay)) {
+    active.value = curDay.date() - 1
+  } else {
+    active.value = 0
+  }
   const monthData = await getMonthWorkingHours({
-    year: today.year(),
-    month: today.month() + 1,
+    year: curDay.year(),
+    month: curDay.month() + 1,
   })
-  for (let i = 0; i < today.daysInMonth(); i++) {
-    const day = `${today.$y}-${today.$M + 1}-${i + 1}`
+  for (let i = 0; i < curDay.daysInMonth(); i++) {
+    const day = `${curDay.$y}-${curDay.$M + 1}-${i + 1}`
     const week = MAP_WEEK[dayjs(day).day()]
     if (monthData[i + 1]) {
       allData.value[i] = {

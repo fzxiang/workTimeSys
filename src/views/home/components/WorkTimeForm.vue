@@ -285,13 +285,19 @@ const onSubmit = async () => {
     showToast('总工时必须等于100%')
     return true
   }
+  const projectSet = new Set()
   const project = formData.value.map((item) => {
+    projectSet.add(item.project_id)
     return {
       ...item,
       w_value: item.w_value / 100,
       status: 0,
     }
   })
+  if (project.length !== projectSet.size) {
+    showToast('不能填写相同项目')
+    return true
+  }
   const res = await saveWorkingHours({
     date: store.selectDate,
     project,
