@@ -296,13 +296,13 @@ const onSubmit = async () => {
     date: store.selectDate,
     project,
   })
-  if(res.code === 0) {
+  if (res && res.code !== 0) {
+    showToast(res.msg)
+  } else {
     const day = dayjs(store.selectDate)
     const month = day.format('YYYY-MM')
     store.setMonthDayData(month, day.date(), project)
-    showToast(res.msg)
-  } else {
-    showToast(res.msg)
+    showToast('提交成功')
   }
 }
 
