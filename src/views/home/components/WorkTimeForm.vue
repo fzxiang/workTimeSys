@@ -84,20 +84,21 @@
       </div>
     </div>
 
-    <van-submit-bar v-if="appStore.showFormData" disabled button-text="提交订单">
-      <template #default>
+    <van-submit-bar>
+      <template v-if="appStore.showFormData" #default>
         <p>
           总工时:
           <span :class="!checkTotal > 0 ? 'success' : 'danger'">{{ totalTime }}%</span>
         </p>
       </template>
-      <template #button>
+      <template v-if="appStore.showFormData" #button>
         <van-button round type="success" v-show="!isEdit" @click="isEdit = true"> 修改 </van-button>
         <van-button round type="primary" plain v-show="isEdit" @click="handleAdd">
           新增项目
         </van-button>
         <van-button round type="primary" v-show="isEdit" native-type="submit"> 提交 </van-button>
       </template>
+      <template v-else #button></template>
     </van-submit-bar>
 
     <van-popup v-model:show="showPicker" position="bottom">
@@ -330,21 +331,6 @@ function handleLogic() {
     total += item.w_value
   })
   totalTime.value = total
-}
-
-// 步进器
-function handleSteper(type, item) {
-  console.log('按钮')
-  if (type === 'plus') {
-    item.w_value += 5
-  } else if (type === 'minus') {
-    item.w_value -= 5
-  }
-  handleLogic()
-}
-
-function handleSwipeCell(param, e) {
-  console.log('handleSwipeCell', param)
 }
 </script>
 

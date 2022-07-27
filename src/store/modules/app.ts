@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { store } from '/@/store'
 import dayjs from 'dayjs'
-
+import { useWindowSize } from '@vant/use'
 interface AppState {
   // 模式暗黑和白色
   mode?: 'dark' | 'light'
@@ -13,13 +13,15 @@ interface AppState {
   pageLoading?: boolean
 }
 
+const { width } = useWindowSize()
+
 // 即时缓存
 export const useAppStore = defineStore(`__app__`, {
   state: (): AppState => ({
     // light || dark
     mode: undefined,
     selectDate: new Date(),
-    calendar: 'close',
+    calendar: width.value < 1080 ? 'close' : 'open',
   }),
   getters: {
     showFormData() {
