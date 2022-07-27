@@ -123,22 +123,23 @@ import dayjs from 'dayjs'
 import { useCacheStore } from '/@/store/modules/cache'
 import { useAppStore } from '/@/store/modules/app'
 import get from 'lodash.get'
-
+import { useWindowSize } from '@vant/use'
 const cacheStore = useCacheStore()
 const appStore = useAppStore()
 
+const { width } = useWindowSize()
 /**
  * 下拉刷新
  * **/
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
-
-const pullRefreshClass = ref('pull-refresh-open')
+const baseClass = width.value < 820 ? 'box-shadow ' : ''
+const pullRefreshClass = ref(baseClass + 'pull-refresh-open')
 watchEffect(() => {
   if (appStore.calendar === 'close') {
-    pullRefreshClass.value = 'pull-refresh-close'
+    pullRefreshClass.value = baseClass + 'pull-refresh-close'
   } else {
-    pullRefreshClass.value = 'pull-refresh-open'
+    pullRefreshClass.value = baseClass + 'pull-refresh-open'
   }
   finishPull()
 })
@@ -347,8 +348,6 @@ function handleLogic() {
 
 .van-submit-bar {
   padding-top: 10px;
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14),
-    0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }
 .van-cell-group {
   margin-bottom: 10px;
@@ -368,8 +367,6 @@ function handleLogic() {
   right: 0;
   top: 140px;
   bottom: 60px;
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14),
-  0 1px 18px 0 rgba(0, 0, 0, 0.12);
   //padding: 10px 0 ;
   background: var(--van-background);
   .pulldown-wrapper {
@@ -385,6 +382,7 @@ function handleLogic() {
     color: #999;
   }
 }
+
 .pull-refresh-open {
   top: 300px;
 }
