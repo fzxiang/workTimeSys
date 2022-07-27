@@ -35,6 +35,8 @@ import { getMonthWorkingHours } from '/@/api/home'
 const appStore = useAppStore()
 const cacheStore = useCacheStore()
 const router = useRouter()
+
+appStore.setSelectData(new Date())
 const calendarRef = ref()
 const today = dayjs()
 const minData = new Date(2022, 0)

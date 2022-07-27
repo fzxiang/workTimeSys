@@ -10,8 +10,9 @@
               :key="index"
               :stop-propagation="true"
               ref="swipeCell"
+              :disabled="!isEdit"
             >
-              <van-cell-group :inset="true">
+              <van-cell-group v-if="isEdit">
                 <van-field
                   size="large"
                   label-width="40px"
@@ -64,6 +65,9 @@
                   </template>
                 </van-field>
               </van-cell-group>
+              <van-cell-group v-else>
+                <van-field :label="item.project_name" :model-value="item.w_value + '%'" readonly />
+              </van-cell-group>
               <template #right>
                 <van-button
                   square
@@ -80,6 +84,22 @@
       </div>
     </div>
 
+    <van-submit-bar v-if="appStore.showFormData" disabled button-text="提交订单">
+      <template #default>
+        <p>
+          总工时:
+          <span :class="!checkTotal > 0 ? 'success' : 'danger'">{{ totalTime }}%</span>
+        </p>
+      </template>
+      <template #button>
+        <van-button round type="success" v-show="!isEdit" @click="isEdit = true"> 修改 </van-button>
+        <van-button round type="primary" plain v-show="isEdit" @click="handleAdd">
+          新增项目
+        </van-button>
+        <van-button round type="primary" v-show="isEdit" native-type="submit"> 提交 </van-button>
+      </template>
+    </van-submit-bar>
+
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         v-model="selectedValues"
@@ -88,47 +108,11 @@
         @cancel="showPicker = false"
       />
     </van-popup>
-
-    <van-submit-bar
-      v-if="appStore.showFormData"
-      disabled
-      button-text="提交订单"
-    >
-      <template #default>
-        <p>
-          总工时:
-          <span :class="!checkTotal > 0 ? 'success' : 'danger'"
-            >{{ totalTime }}%</span
-          >
-        </p>
-      </template>
-      <template #button>
-        <van-button
-          round
-          plain
-          type="primary"
-          @click="handleAdd"
-          style="width: 120px; margin-left: 10px"
-        >
-          新增项目
-        </van-button>
-        <van-button
-          round
-          type="primary"
-          native-type="submit"
-          :disabled="!appStore.showFormData"
-          style="width: 120px; margin-left: 10px"
-        >
-          提交
-        </van-button>
-      </template>
-    </van-submit-bar>
   </van-form>
 </template>
 
 <script setup lang="ts">
 import type { PickerConfirmEventParams } from 'vant'
-// import { ref, onMounted, nextTick, defineProps } from 'vue'
 import { showToast } from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
@@ -137,6 +121,7 @@ import { saveWorkingHours } from '/@/api/home'
 import dayjs from 'dayjs'
 import { useCacheStore } from '/@/store/modules/cache'
 import { useAppStore } from '/@/store/modules/app'
+import get from 'lodash.get'
 
 const cacheStore = useCacheStore()
 const appStore = useAppStore()
@@ -187,13 +172,6 @@ function finishPull() {
     bscroll.value.refresh()
   })
 }
-async function pullingDownHandler() {
-  isPulling.value = true
-
-  // await requestData()
-
-  finishPull()
-}
 
 /**
  * 表单
@@ -212,35 +190,38 @@ const formData = ref<[FormData]>([
 ])
 const showPicker = ref(false)
 const totalTime = ref(100)
-
-watch(
-  () => appStore.selectDate,
-  (val, oldVal) => {
-    const day = dayjs(val)
-    const month = day.format('YYYY-MM')
-    const $D = day.date()
-    const propsMonthDataItem = cacheStore.getMonthData[month]
-    if (propsMonthDataItem && propsMonthDataItem[$D]) {
-      formData.value = propsMonthDataItem[$D].map((item) => {
+// 编辑和提交状态
+const isEdit = ref(false)
+watchEffect(() => {
+  const curDay = dayjs(appStore.selectDate)
+  const month = curDay.format('YYYY-MM')
+  const $D = curDay.date()
+  const propsMonthDataItem = cacheStore.getMonthData[month]
+  if (propsMonthDataItem && propsMonthDataItem[$D]) {
+    formData.value = propsMonthDataItem[$D].map((item) => {
+      return {
+        ...item,
+        w_value: parseInt(item.w_value * 100 + ''),
+      }
+    })
+  } else {
+    if (cacheStore.working.length !== 0) {
+      formData.value = cacheStore.working.map((item) => {
         return {
           ...item,
           w_value: parseInt(item.w_value * 100 + ''),
         }
       })
-    } else {
-      if (cacheStore.working.length !== 0) {
-        formData.value = cacheStore.working.map((item) => {
-          return {
-            ...item,
-            w_value: parseInt(item.w_value * 100 + ''),
-          }
-        })
-      }
     }
-    handleLogic()
-  },
-  { immediate: true },
-)
+  }
+  handleLogic()
+})
+
+watchEffect(() => {
+  const curDay = dayjs(appStore.selectDate)
+  const today = dayjs()
+  handleEditLogic(today, curDay)
+})
 
 const selectedIndex = ref(0)
 const selectedValues = ref<[number]>([0])
@@ -260,6 +241,19 @@ function handleShowPicker(index: number) {
 // 提交
 const checkSubmit = (value) => {
   return value || value !== 0
+}
+// 选择日期后 执行是否编辑状态
+function handleEditLogic(today, curDay) {
+  // 如果是当天 则为编辑状态
+  if (today.format('YYYY-MM-DD') === curDay.format('YYYY-MM-DD')) {
+    isEdit.value = true
+    return true
+  }
+  const year = curDay.format('YYYY-MM')
+  const date = curDay.date()
+  const status = get(cacheStore.monthData, [year, date, '0', 'status'])
+  // 日期未提交编写  则为编辑状态
+  isEdit.value = status !== 0
 }
 const checkTotal = computed(() => {
   let res = true
@@ -298,6 +292,7 @@ const onSubmit = async () => {
     cacheStore.setMonthDayData(month, day.date(), project)
     cacheStore.setWorking(project)
     showToast('提交成功')
+    isEdit.value = false
   }
 }
 
@@ -383,7 +378,7 @@ function handleSwipeCell(param, e) {
   left: 0;
   right: 0;
   top: 140px;
-  bottom: 80px;
+  bottom: 60px;
   //padding: 10px 0 ;
   background: var(--van-background);
   .pulldown-wrapper {
@@ -404,6 +399,10 @@ function handleSwipeCell(param, e) {
 }
 .pull-refresh-close {
   top: 140px;
+}
+.van-submit-bar .van-button {
+  width: 120px;
+  margin-left: 10px;
 }
 
 .success {

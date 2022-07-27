@@ -21,6 +21,7 @@
     "@vueuse/core": "^8.9.4",
     "axios": "^0.27.2",
     "dayjs": "^1.11.3",
+    "lodash.get": "^4.4.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.14",
     "pinia-plugin-persistedstate": "^1.6.3",
@@ -32,6 +33,7 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/lodash.get": "^4.4.7",
     "@types/node": "^18.0.6",
     "@types/nprogress": "^0.2.0",
     "@types/store": "^2.0.2",
