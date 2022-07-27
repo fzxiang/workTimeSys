@@ -1,9 +1,9 @@
 <template>
   <van-form @submit="onSubmit" input-align="right">
-    <div class="pullup" :class="pullRefreshClass">
-      <div ref="scroll" class="pullup-wrapper">
-        <div class="pullup-content">
-          <div v-if="appStore.showFormData" class="pullup-list">
+    <div class="pulldown" :class="pullRefreshClass">
+      <div ref="scroll" class="pulldown-wrapper">
+        <div class="pulldown-content">
+          <div v-if="appStore.showFormData" class="pulldown-list">
             <van-swipe-cell
               name="swipeCell"
               v-for="(item, index) in formData"
@@ -378,7 +378,7 @@ function handleSwipeCell(param, e) {
   padding-top: 10px;
 }
 
-.pullup {
+.pulldown {
   position: absolute;
   left: 0;
   right: 0;
@@ -386,14 +386,14 @@ function handleSwipeCell(param, e) {
   bottom: 80px;
   //padding: 10px 0 ;
   background: var(--van-background);
-  .pullup-wrapper {
+  .pulldown-wrapper {
     height: 100%;
     overflow: hidden;
   }
-  .pullup-list-item {
+  .pulldown-list-item {
     list-style: none;
   }
-  .pullup-tips {
+  .pulldown-tips {
     padding: 20px;
     text-align: center;
     color: #999;

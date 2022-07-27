@@ -40,21 +40,13 @@ function handleSSOLogin() {
 </script>
 
 <style lang="less" scoped>
-@media (max-width: 1200px) {
+@media (max-width: 780px) {
   .vben-login {
-    //background-color: #293146;
+    position: absolute;
+    top: 40%;
+    left: 0;
+    margin-top: -50%;
   }
-}
-.vben-login {
-  position: absolute;
-  top: 40%;
-  left: 0;
-  margin-top: -50%;
-  //display: flex;
-  //align-items: center;
-  //min-height: 100%;
-  //overflow: hidden;
-  //background-color: #293146;
 }
 .van-row {
   //margin-top: 50%;
