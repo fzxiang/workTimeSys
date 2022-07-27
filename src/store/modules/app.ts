@@ -21,7 +21,7 @@ export const useAppStore = defineStore(`__app__`, {
     // light || dark
     mode: undefined,
     selectDate: new Date(),
-    calendar: width.value < 1080 ? 'close' : 'open',
+    calendar: width.value < 820 ? 'close' : 'open',
   }),
   getters: {
     showFormData() {

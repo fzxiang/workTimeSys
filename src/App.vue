@@ -42,22 +42,23 @@ watch(
 )
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .wrapper {
-  //display: flex;
-  //justify-content: center;
-  //height: 100%;
   text-align: center;
   overflow: auto;
-  .wrapper-item {
-    //flex: 1;
+}
+@media screen and (min-width: 820px) {
+  // 适配
+  body {
+    width: 820px;
+    position: relative;
+    margin-left: 50%;
+    transform: translateX(-410px);
+    display: inline-block;
+    .van-submit-bar,
+    .van-popup {
+      width: 820px;
+    }
   }
 }
-//@media screen and (min-width: 640px) {
-//  .wrapper-item {
-//    //flex: none;
-//    display: inline-block;
-//    width: 800px;
-//  }
-//}
 </style>
