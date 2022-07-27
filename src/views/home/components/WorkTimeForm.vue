@@ -1,5 +1,5 @@
 <template>
-  <van-form @submit="onSubmit" input-align="right">
+  <van-form @submit="onSubmit" input-align="right" :disabled="!isEdit">
     <div class="pulldown" :class="pullRefreshClass">
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
@@ -12,7 +12,7 @@
               ref="swipeCell"
               :disabled="!isEdit"
             >
-              <van-cell-group v-if="isEdit">
+              <van-cell-group>
                 <van-field
                   size="large"
                   label-width="40px"
@@ -38,12 +38,14 @@
                       :show-plus="false"
                       :show-input="false"
                       @change="handleLogic"
+                      :disabled="!isEdit"
                     />
                     <van-slider
                       v-model="item.w_value"
                       step="5"
                       style="margin: 0 30px"
                       @change="handleLogic"
+                      :disabled="!isEdit"
                     >
                       <template #button>
                         <van-button type="primary" size="small" round style="width: 40px"
@@ -61,12 +63,10 @@
                       :show-minus="false"
                       :show-input="false"
                       @change="handleLogic"
+                      :disabled="!isEdit"
                     />
                   </template>
                 </van-field>
-              </van-cell-group>
-              <van-cell-group v-else>
-                <van-field :label="item.project_name" :model-value="item.w_value + '%'" readonly />
               </van-cell-group>
               <template #right>
                 <van-button
@@ -240,6 +240,7 @@ const onConfirm = (obj: PickerConfirmEventParams) => {
 }
 //
 function handleShowPicker(index: number) {
+  if (!isEdit.value) return true
   const value = formData.value[index]?.project_id as number
   showPicker.value = true
   selectedValues.value = [value]
