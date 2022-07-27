@@ -192,30 +192,35 @@ const showPicker = ref(false)
 const totalTime = ref(100)
 // 编辑和提交状态
 const isEdit = ref(false)
-watchEffect(() => {
-  const curDay = dayjs(appStore.selectDate)
-  const month = curDay.format('YYYY-MM')
-  const $D = curDay.date()
-  const propsMonthDataItem = cacheStore.getMonthData[month]
-  if (propsMonthDataItem && propsMonthDataItem[$D]) {
-    formData.value = propsMonthDataItem[$D].map((item) => {
-      return {
-        ...item,
-        w_value: parseInt(item.w_value * 100 + ''),
-      }
-    })
-  } else {
-    if (cacheStore.working.length !== 0) {
-      formData.value = cacheStore.working.map((item) => {
+
+watch(
+  () => appStore.selectDate,
+  (val, oldVal) => {
+    const day = dayjs(val)
+    const month = day.format('YYYY-MM')
+    const $D = day.date()
+    const propsMonthDataItem = cacheStore.getMonthData[month]
+    if (propsMonthDataItem && propsMonthDataItem[$D]) {
+      formData.value = propsMonthDataItem[$D].map((item) => {
         return {
           ...item,
           w_value: parseInt(item.w_value * 100 + ''),
         }
       })
+    } else {
+      if (cacheStore.working.length !== 0) {
+        formData.value = cacheStore.working.map((item) => {
+          return {
+            ...item,
+            w_value: parseInt(item.w_value * 100 + ''),
+          }
+        })
+      }
     }
-  }
-  handleLogic()
-})
+    handleLogic()
+  },
+  { immediate: true },
+)
 
 watchEffect(() => {
   const curDay = dayjs(appStore.selectDate)
