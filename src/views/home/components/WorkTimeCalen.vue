@@ -116,11 +116,16 @@ function handleStats() {
 </script>
 
 <style lang="less" scoped>
+:deep(.van-calendar__day) {
+  flex-direction: column;
+}
 :deep(.van-calendar__selected-day) {
+  flex-direction: column;
   border-radius: 50%;
 }
 :deep(.van-calendar__bottom-info) {
-  bottom: 4px;
+  position: static;
+  height: 6px;
 }
 :deep(.van-calendar__body) {
   //overflow: hidden;
