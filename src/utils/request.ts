@@ -79,14 +79,12 @@ const responseHandler = (
       return res
     case EXPIRE_LOGIN_CODE:
       localStore.remove(STORAGE_USER_KEY)
+      showNotify({
+        type: 'danger',
+        message: '登录信息已过期',
+      })
       location.pathname = '/login'
-      // router
-      //   .push({
-      //     path: '/login',
-      //   })
-      //   .then((r) => {
-      //     console.log(r)
-      //   })
+      // location.pathname = '/login'
       return Promise.reject()
     default:
       return res
