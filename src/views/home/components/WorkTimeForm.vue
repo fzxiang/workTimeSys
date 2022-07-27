@@ -358,13 +358,11 @@ function handleSwipeCell(param, e) {
 :deep(.van-cell-group--inset) {
   border: 1px solid var(--van-cell-border-color);
 }
-.bottom-btn {
-  background: var(--van-background);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px;
+
+.van-submit-bar {
+  padding-top: 10px;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14),
+    0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }
 .van-cell-group {
   margin-bottom: 10px;
@@ -384,6 +382,8 @@ function handleSwipeCell(param, e) {
   right: 0;
   top: 140px;
   bottom: 60px;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14),
+  0 1px 18px 0 rgba(0, 0, 0, 0.12);
   //padding: 10px 0 ;
   background: var(--van-background);
   .pulldown-wrapper {
