@@ -11,7 +11,6 @@
       style="height: 300px"
       :class="calendarClass"
       :min-date="minData"
-      color="#1e80ff"
       :formatter="formatter"
       @select="onSelect"
       @month-show="onMonthShow"
