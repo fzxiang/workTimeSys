@@ -12,62 +12,65 @@
               ref="swipeCellRef"
               :disabled="!isEdit"
             >
-              <van-cell-group>
-                <van-field
-                  size="large"
-                  label-width="40px"
-                  v-model="item.project_name"
-                  is-link
-                  :readonly="true"
-                  name="project_id"
-                  label="项目"
-                  placeholder="点击选择项目"
-                  @click="handleShowPicker(index)"
-                  error-message-align="right"
-                  :rules="[{ required: true, message: '请选择项目' }]"
-                />
-                <van-field name="slider" label="工时" size="large" :readonly="true">
-                  <template #input>
-                    <van-stepper
-                      v-model="item.w_value"
-                      min="0"
-                      max="100"
-                      step="5"
-                      integer
-                      button-size="22"
-                      :show-plus="false"
-                      :show-input="false"
-                      @change="handleLogic"
-                      :disabled="!isEdit"
-                    />
-                    <van-slider
-                      v-model="item.w_value"
-                      step="5"
-                      style="margin: 0 30px"
-                      @change="handleLogic"
-                      :disabled="!isEdit"
-                    >
-                      <template #button>
-                        <van-button type="primary" size="small" round style="width: 40px"
-                          >{{ item.w_value }}%</van-button
-                        >
-                      </template>
-                    </van-slider>
-                    <van-stepper
-                      v-model="item.w_value"
-                      min="0"
-                      max="100"
-                      step="5"
-                      integer
-                      button-size="22"
-                      :show-minus="false"
-                      :show-input="false"
-                      @change="handleLogic"
-                      :disabled="!isEdit"
-                    />
-                  </template>
-                </van-field>
-              </van-cell-group>
+              <van-skeleton :row="3" :row-width="['60%', '100%', '60%']" round :loading="loading">
+                <van-cell-group>
+                  <van-field
+                    size="large"
+                    label-width="40px"
+                    v-model="item.project_name"
+                    is-link
+                    :readonly="true"
+                    name="project_id"
+                    label="项目"
+                    placeholder="点击选择项目"
+                    @click="handleShowPicker(index)"
+                    error-message-align="right"
+                    :rules="[{ required: true, message: '请选择项目' }]"
+                  />
+                  <van-field name="slider" label="工时" size="large" :readonly="true">
+                    <template #input>
+                      <van-stepper
+                        v-model="item.w_value"
+                        min="0"
+                        max="100"
+                        step="5"
+                        integer
+                        button-size="22"
+                        :show-plus="false"
+                        :show-input="false"
+                        @change="handleLogic"
+                        :disabled="!isEdit"
+                      />
+                      <van-slider
+                        v-model="item.w_value"
+                        step="5"
+                        style="margin: 0 30px"
+                        @change="handleLogic"
+                        :disabled="!isEdit"
+                      >
+                        <template #button>
+                          <van-button type="primary" size="small" round style="width: 40px"
+                            >{{ item.w_value }}%</van-button
+                          >
+                        </template>
+                      </van-slider>
+                      <van-stepper
+                        v-model="item.w_value"
+                        min="0"
+                        max="100"
+                        step="5"
+                        integer
+                        button-size="22"
+                        :show-minus="false"
+                        :show-input="false"
+                        @change="handleLogic"
+                        :disabled="!isEdit"
+                      />
+                    </template>
+                  </van-field>
+                </van-cell-group>
+              </van-skeleton>
+
               <template #right>
                 <van-button
                   square
@@ -140,7 +143,7 @@ const appStore = useAppStore()
 
 const { width } = useWindowSize()
 /**
- * 下拉刷新
+ * 下拉展开日历操作
  * **/
 BScroll.use(MouseWheel)
 BScroll.use(PullDown)
@@ -157,7 +160,7 @@ watchEffect(() => {
 
 const scroll = ref()
 const bscroll = ref()
-const isPulling = ref(false)
+const loading = ref(false)
 onMounted(() => {
   bscroll.value = new BScroll(scroll.value, {
     scrollY: true,
@@ -209,6 +212,7 @@ const isEdit = ref(false)
 watch(
   () => appStore.selectDate,
   (val, oldVal) => {
+    loading.value = true
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
@@ -231,6 +235,10 @@ watch(
       }
     }
     handleLogic()
+    const timer = setTimeout(() => {
+      loading.value = false
+      clearTimeout(timer)
+    }, 300)
   },
   { immediate: true },
 )
@@ -356,7 +364,6 @@ function openDelete() {
     })
   })
 }
-
 </script>
 
 <style scoped lang="less">
@@ -373,11 +380,12 @@ function openDelete() {
 .van-submit-bar {
   padding-top: 10px;
 }
-.van-cell-group {
+.van-skeleton {
+  padding: 10px;
   margin-bottom: 10px;
 }
-.van-swipe-cell:first-child {
-  .van-cell-group {
+.van-skeleton:first-child {
+  .van-skeleton {
     margin-top: 10px;
   }
 }
