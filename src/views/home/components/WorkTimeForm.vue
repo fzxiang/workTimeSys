@@ -422,7 +422,7 @@ function openDelete() {
   top: 140px;
 }
 .van-submit-bar .van-button {
-  width: 120px;
+  width: 90px;
   margin-left: 10px;
 }
 
