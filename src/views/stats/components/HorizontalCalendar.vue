@@ -81,4 +81,9 @@ h4 {
   color: var(--van-button-primary-color);
   margin: 10px auto;
 }
+
+.van-button--plain {
+  animation-duration: 0.5s;
+  animation-name: bounceIn;
+}
 </style>

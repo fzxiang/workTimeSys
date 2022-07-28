@@ -9,7 +9,7 @@
               v-for="(item, index) in formData"
               :key="index"
               :stop-propagation="true"
-              ref="swipeCell"
+              ref="swipeCellRef"
               :disabled="!isEdit"
             >
               <van-cell-group>
@@ -91,11 +91,24 @@
         </p>
       </template>
       <template #button>
-        <van-button round type="success" v-show="!isEdit" @click="isEdit = true"> 修改 </van-button>
-        <van-button round type="primary" plain v-show="isEdit" @click="handleAdd">
-          新增项目
-        </van-button>
-        <van-button round type="primary" v-show="isEdit" native-type="submit"> 提交 </van-button>
+        <div v-show="!isEdit">
+          <van-button round type="success" v-show="!isEdit" @click="isEdit = true">
+            修改
+          </van-button>
+        </div>
+        <div v-show="isEdit">
+          <van-button
+            v-if="appStore.userAgent === 'desktop'"
+            round
+            type="danger"
+            plain
+            @click="openDelete"
+          >
+            删除
+          </van-button>
+          <van-button round type="primary" plain @click="handleAdd"> 新增项目 </van-button>
+          <van-button round type="primary" native-type="submit"> 提交 </van-button>
+        </div>
       </template>
     </van-submit-bar>
 
@@ -332,6 +345,18 @@ function handleLogic() {
   })
   totalTime.value = total
 }
+
+// pc端 删除操作
+const swipeCellRef = ref()
+
+function openDelete() {
+  swipeCellRef.value.forEach((item) => {
+    item.open({
+      position: 'right',
+    })
+  })
+}
+
 </script>
 
 <style scoped lang="less">
