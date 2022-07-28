@@ -4,6 +4,9 @@
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
           <div class="pulldown-list">
+            <van-notice-bar v-if="tips" mode="closeable" left-icon="info-o">
+              {{ tips }}
+            </van-notice-bar>
             <van-swipe-cell
               name="swipeCell"
               v-for="(item, index) in formData"
@@ -208,7 +211,8 @@ const showPicker = ref(false)
 const totalTime = ref(100)
 // 编辑和提交状态
 const isEdit = ref(false)
-
+// 状态提示
+const tips = ref()
 watch(
   () => appStore.selectDate,
   (val, oldVal) => {
