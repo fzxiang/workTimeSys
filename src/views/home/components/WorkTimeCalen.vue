@@ -8,9 +8,9 @@
       :show-confirm="false"
       :show-mark="false"
       :safe-area-inset-bottom="false"
-      style="height: 300px"
       :class="calendarClass"
       :min-date="minData"
+      :max-date="new Date()"
       :formatter="formatter"
       @select="onSelect"
       @month-show="onMonthShow"
@@ -38,7 +38,8 @@ const router = useRouter()
 appStore.setSelectData(new Date())
 const calendarRef = ref()
 const today = dayjs()
-const minData = new Date(2022, 0)
+const minData = new Date(today.year(), today.month() - 5)
+console.log(minData)
 const calendarClass = ref('calendarClose')
 
 const onMonthShow = async (obj) => {
@@ -49,17 +50,23 @@ const onMonthShow = async (obj) => {
   })
   await cacheStore.setMonthData(today.format('YYYY-MM'), monthData)
 }
-onMounted(() => {
-  nextTick(() => {
-    calendarRef.value.scrollToDate(new Date())
-  })
 
+// fix: 初始日历没有 偏移
+nextTick(() => {
+  calendarRef.value.scrollToDate(appStore.selectDate)
+})
+
+onMounted(() => {
   watchEffect(() => {
     if (appStore.calendar === 'close') {
-      calendarRef.value.scrollToDate(appStore.selectDate)
       calendarClass.value = 'calendarClose'
+      // fix: 上拉缩起日历 css height transition timer is 300ms
+      const timer = setTimeout(() => {
+        clearTimeout(timer)
+        calendarRef.value.scrollToDate(appStore.selectDate)
+      }, 300)
     } else {
-      calendarClass.value = ''
+      calendarClass.value = 'calendarOpen'
     }
   })
 })
@@ -127,13 +134,20 @@ function handleStats() {
   position: static;
   height: 6px;
 }
-:deep(.van-calendar__body) {
-  //overflow: hidden;
-}
+//:deep(.van-calendar__body) {
+//  transition: height ease 300ms;
+//}
 .calendarClose {
+  height: 140px;
   :deep(.van-calendar__body) {
     overflow: hidden;
   }
+}
+.calendarOpen {
+  height: 300px;
+}
+.van-calendar {
+  transition: height ease-in-out 300ms;
 }
 
 .link-btn {

@@ -26,7 +26,7 @@ export const routes = [
     path: '/stats',
     name: 'WorkStats',
     component: () => import('/@/views/stats/index.vue'),
-    meta: { title: '工时统计' /*, ignoreAuth: true*/ },
+    meta: { title: '统计' /*, ignoreAuth: true*/ },
   },
   { path: '/:path(.*)', component: () => import('/@/views/NotFound.vue') },
 ]

@@ -21,6 +21,7 @@ export const useAppStore = defineStore(`__app__`, {
     // light || dark
     mode: undefined,
     selectDate: new Date(),
+    userAgent: width.value < 820 ? 'mobile' : 'desktop',
     calendar: width.value < 820 ? 'close' : 'open',
   }),
   getters: {

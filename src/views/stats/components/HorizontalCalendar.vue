@@ -1,156 +1,84 @@
 <template>
-  <h4>{{ title }} 年</h4>
-  <van-swipe
-    class="my-swipe"
-    :show-indicators="false"
-    :loop="false"
-    :initial-swipe="initialSwipe"
-    @change="onChange"
-  >
-    <template v-for="item in date" :key="item.year">
+  <div class="header">
+    <h4 v-if="appStore.userAgent === 'desktop'">{{ year }} 年</h4>
+    <van-swipe :show-indicators="false" :loop="false">
       <van-swipe-item>
         <van-button
+          v-for="item in date"
           type="primary"
           size="small"
-          @click="handleClick(0)"
-          :plain="currentMonth !== year + 0"
-          >1 月</van-button
+          round
+          :key="item.key"
+          @click="handleClick(item)"
+          :plain="currentMon === item.key"
         >
-        <van-button
-          type="primary"
-          size="small"
-          @click="handleClick(1)"
-          :plain="currentMonth !== year + 1"
-          >2 月</van-button
-        >
-        <van-button
-          type="primary"
-          size="small"
-          @click="handleClick(2)"
-          :plain="currentMonth !== year + 2"
-          >3 月</van-button
-        >
-        <van-button
-          type="primary"
-          size="small"
-          @click="handleClick(3)"
-          :plain="currentMonth !== year + 3"
-          >4 月</van-button
-        >
-        <van-button
-          type="primary"
-          size="small"
-          @click="handleClick(4)"
-          :plain="currentMonth !== year + 4"
-          >5 月</van-button
-        >
-        <van-button
-          type="primary"
-          size="small"
-          @click="handleClick(5)"
-          :plain="currentMonth !== year + 5"
-          >6 月</van-button
-        >
+          {{ item.month + 1 }} 月
+        </van-button>
       </van-swipe-item>
-      <van-swipe-item>
-        <div>
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(6)"
-            :plain="currentMonth !== year + 6"
-            >7 月</van-button
-          >
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(7)"
-            :plain="currentMonth !== year + 7"
-            >8 月</van-button
-          >
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(8)"
-            :plain="currentMonth !== year + 8"
-            >9 月</van-button
-          >
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(9)"
-            :plain="currentMonth !== year + 9"
-            >10 月</van-button
-          >
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(10)"
-            :plain="currentMonth !== year + 10"
-            >11 月</van-button
-          >
-          <van-button
-            type="primary"
-            size="small"
-            @click="handleClick(11)"
-            :plain="currentMonth !== year + 11"
-            >12 月</van-button
-          >
-        </div>
-      </van-swipe-item>
-    </template>
-  </van-swipe>
+    </van-swipe>
+  </div>
 </template>
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-// import { useCacheStore } from '/@/store/modules/cache'
-// import { useAppStore } from '/@/store/modules/app'
+import { useAppStore } from '/@/store/modules/app'
+import { useTitle } from '@vueuse/core'
+const appStore = useAppStore()
 
-// const cacheStore = useCacheStore()
-// const appStore = useAppStore()
+const siteTitle = useTitle()
 const today = dayjs(new Date())
+const year = ref(today.year())
+siteTitle.value = '统计 · ' + year.value
+const currentMon = ref(today.format('YYYY-MM'))
+const date = []
 
-const date = ref([])
-const title = ref()
-const year = today.year()
-const month = ref(today.month())
-
-title.value = year
-date.value = [year - 2, year - 1, year]
-
-const currentMonth = computed(() => {
-  return title.value + month.value
-})
-const initialSwipe = today.month() / 6 > 1 ? date.value.length * 2 : date.value.length * 2 - 1
-function onChange(index) {
-  const i = parseInt(index / 2 + '')
-  title.value = date.value[i]
-  console.log(index)
-  if (index === 0) {
-    const firstDate = date.value[index]
-    date.value.unshift(firstDate - 1)
-  }
+// 展示只有六个月数据
+for (let i = 0; i < 6; i++) {
+  const before = today.subtract(i, 'month')
+  date.unshift({
+    key: before.format('YYYY-MM'),
+    year: before.year(),
+    month: before.month(),
+  })
 }
+
 // as interface
 interface Emits {
   (e: 'change', newValue: string): void
 }
 const emits = defineEmits<Emits>()
-function handleClick(index) {
-  month.value = index
-  const value = dayjs(new Date(title.value, index)).format('YYYY-MM-DD')
-  emits('change', value)
+function handleClick(date) {
+  currentMon.value = date.key
+  year.value = date.year
+  emits('change', date.key)
 }
 </script>
 
 <style lang="less" scoped>
-.van-button {
-  border: none;
-  width: 60px;
-  border-radius: 0;
+.header {
+  background: var(--van-blue);
+  padding: 15px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  h4 {
+    margin-top: 0;
+  }
 }
+.van-swipe-item {
+  display: flex;
+  justify-content: space-evenly;
+  .van-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+}
+
 h4 {
+  color: var(--van-button-primary-color);
   margin: 10px auto;
 }
 </style>

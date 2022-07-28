@@ -1,13 +1,6 @@
 <template>
-  <div>
-    <vue-horizontal-calendar @change="handleChange" />
-  </div>
-  <van-pull-refresh
-    v-show="!isNoData"
-    v-model="isLoading"
-    style="min-height: 100vh"
-    @refresh="onRefresh"
-  >
+  <vue-horizontal-calendar @change="handleChange" />
+  <van-pull-refresh v-show="!isNoData" v-model="isLoading" @refresh="onRefresh" style="margin-top: 92px">
     <div style="padding: 10px 15px">
       <van-steps direction="vertical" :active="active">
         <van-step v-for="item in allData" :key="item.day">

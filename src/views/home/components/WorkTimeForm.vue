@@ -3,7 +3,7 @@
     <div class="pulldown" :class="pullRefreshClass">
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
-          <div v-if="appStore.showFormData" class="pulldown-list">
+          <div class="pulldown-list">
             <van-swipe-cell
               name="swipeCell"
               v-for="(item, index) in formData"
@@ -79,26 +79,24 @@
               </template>
             </van-swipe-cell>
           </div>
-          <van-empty v-else description="未来工作日不能填写" />
         </div>
       </div>
     </div>
 
     <van-submit-bar>
-      <template v-if="appStore.showFormData" #default>
+      <template #default>
         <p>
           总工时:
           <span :class="!checkTotal > 0 ? 'success' : 'danger'">{{ totalTime }}%</span>
         </p>
       </template>
-      <template v-if="appStore.showFormData" #button>
+      <template #button>
         <van-button round type="success" v-show="!isEdit" @click="isEdit = true"> 修改 </van-button>
         <van-button round type="primary" plain v-show="isEdit" @click="handleAdd">
           新增项目
         </van-button>
         <van-button round type="primary" v-show="isEdit" native-type="submit"> 提交 </van-button>
       </template>
-      <template v-else #button></template>
     </van-submit-bar>
 
     <van-popup v-model:show="showPicker" position="bottom">
@@ -338,7 +336,7 @@ function handleLogic() {
 
 <style scoped lang="less">
 .van-form * {
-  transition: all 0.3s ease;
+  transition: all 300ms ease-in;
 }
 .delete-button {
   height: 100%;

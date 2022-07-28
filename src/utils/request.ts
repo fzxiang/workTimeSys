@@ -4,7 +4,7 @@ import type { ResponseBody } from '/@/api/typing'
 import { localStore } from '/@/utils/local-storage'
 
 import setting from '/@/setting/projectSetting'
-import { showToast, showNotify } from 'vant'
+import { showToast, showFailToast, showNotify } from 'vant'
 
 const { STORAGE_USER_TOKEN_KEY, REQUEST_TOKEN_KEY, EXPIRE_LOGIN_CODE, STORAGE_USER_KEY } = setting
 // 这里是用于设定请求后端时，所用的 Token KEY
@@ -79,11 +79,13 @@ const responseHandler = (
       return res
     case EXPIRE_LOGIN_CODE:
       localStore.remove(STORAGE_USER_KEY)
-      showNotify({
-        type: 'danger',
+      showFailToast({
         message: '登录信息已过期',
       })
-      location.pathname = '/login'
+      const timer = setTimeout(() => {
+        clearTimeout(timer)
+        location.pathname = '/login'
+      }, 1500)
       // location.pathname = '/login'
       return Promise.reject()
     default:
