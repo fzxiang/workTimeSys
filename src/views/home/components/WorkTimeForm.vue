@@ -294,7 +294,7 @@ function handleEditLogic(today, curDay) {
   }
   const year = curDay.format('YYYY-MM')
   const date = curDay.date()
-  const status = get(cacheStore.monthData, [year, date, '0', 'status'])
+  const status = get(cacheStore.monthData, [year, 'status', date, 'status'])
   // 日期未提交编写  则为编辑状态
   isEdit.value = status !== 0
 }
