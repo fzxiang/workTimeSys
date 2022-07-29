@@ -89,34 +89,34 @@
       </div>
     </div>
 
-    <van-submit-bar>
-      <template #default>
-        <p>
-          总工时:
-          <span :class="!checkTotal > 0 ? 'success' : 'danger'">{{ totalTime }}%</span>
-        </p>
-      </template>
-      <template #button>
-        <div v-show="!isEdit">
-          <van-button round type="success" v-show="!isEdit" @click="isEdit = true">
-            修改
-          </van-button>
-        </div>
-        <div v-show="isEdit">
-          <van-button
-            v-if="appStore.userAgent === 'desktop'"
-            round
-            type="danger"
-            plain
-            @click="openDelete"
-          >
-            删除
-          </van-button>
-          <van-button round type="primary" plain @click="handleAdd"> 新增项目 </van-button>
-          <van-button round type="primary" native-type="submit"> 提交 </van-button>
-        </div>
-      </template>
-    </van-submit-bar>
+    <!--    <van-submit-bar>-->
+    <!--      <template #default>-->
+    <!--        <p>-->
+    <!--          总工时:-->
+    <!--          <span :class="!checkTotal > 0 ? 'success' : 'danger'">{{ totalTime }}%</span>-->
+    <!--        </p>-->
+    <!--      </template>-->
+    <!--      <template #button>-->
+    <!--        <div v-show="!isEdit">-->
+    <!--          <van-button round type="success" v-show="!isEdit" @click="isEdit = true">-->
+    <!--            修改-->
+    <!--          </van-button>-->
+    <!--        </div>-->
+    <!--        <div v-show="isEdit">-->
+    <!--          <van-button-->
+    <!--            v-if="appStore.userAgent === 'desktop'"-->
+    <!--            round-->
+    <!--            type="danger"-->
+    <!--            plain-->
+    <!--            @click="openDelete"-->
+    <!--          >-->
+    <!--            删除-->
+    <!--          </van-button>-->
+    <!--          <van-button round type="primary" plain @click="handleAdd"> 新增项目 </van-button>-->
+    <!--          <van-button round type="primary" native-type="submit"> 提交 </van-button>-->
+    <!--        </div>-->
+    <!--      </template>-->
+    <!--    </van-submit-bar>-->
 
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
