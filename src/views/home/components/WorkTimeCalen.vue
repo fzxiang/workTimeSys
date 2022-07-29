@@ -15,9 +15,12 @@
       @select="onSelect"
       @month-show="onMonthShow"
     >
-      <template #bottom-info="scoped">
-        <span class="van-badge van-badge--dot" :class="handleFillStatus(scoped)"></span>
+      <template #top-info="scoped">
+        <van-badge dot :color="handleStatusColor(scoped)" />
       </template>
+      <!--      <template #bottom-info="scoped">-->
+      <!--        <span>工作日</span>-->
+      <!--      </template>-->
     </van-calendar>
     <van-button class="link-btn" plain type="primary" @click="handleStats">工时统计</van-button>
   </div>
@@ -30,6 +33,7 @@ import { useCacheStore } from '/@/store/modules/cache'
 import { useAppStore } from '/@/store/modules/app'
 import { useRouter } from 'vue-router'
 import { getMonthWorkingHours } from '/@/api/home'
+import get from 'lodash.get'
 
 const appStore = useAppStore()
 const cacheStore = useCacheStore()
@@ -92,8 +96,7 @@ function handleFillStatus(scoped: CalendarDayItem) {
   const { date } = scoped
   const day = dayjs(date)
   const month = day.format('YYYY-MM')
-  const monthData = cacheStore.getMonthData[month]
-
+  const monthData = get(cacheStore.getMonthData, [month, 'status'])
   const $D = day.date()
   let res = ''
   // 未来日期不标记📌
@@ -102,7 +105,7 @@ function handleFillStatus(scoped: CalendarDayItem) {
   }
   // 已填写
   else if (monthData && monthData[$D]) {
-    const { status } = monthData[$D][0]
+    const { status } = monthData[$D]
     if (status === 0) {
       res = 'van-badge-status-ok'
     }
@@ -110,6 +113,33 @@ function handleFillStatus(scoped: CalendarDayItem) {
   // 未填写
   else {
     res = 'van-badge-status-no'
+  }
+  return res
+}
+
+const cssStyle = getComputedStyle(document.querySelector('body'))
+console.log(cssStyle.getPropertyValue('--van-text-color-3'))
+function handleStatusColor(scoped: CalendarDayItem) {
+  const { date } = scoped
+  const day = dayjs(date)
+  const month = day.format('YYYY-MM')
+  const monthData = get(cacheStore.getMonthData, [month, 'status'])
+  const $D = day.date()
+  let res = ''
+  // 未来日期不标记📌
+  if (day.isAfter(today, 'day')) {
+    res = 'transparent'
+  }
+  // 已填写
+  else if (monthData && monthData[$D]) {
+    const { status } = monthData[$D]
+    if (status === 0) {
+      res = cssStyle.getPropertyValue('--van-success-color')
+    }
+  }
+  // 未填写
+  else {
+    res = cssStyle.getPropertyValue('--van-text-color-3')
   }
   return res
 }
@@ -130,24 +160,37 @@ function handleStats() {
   flex-direction: column;
   border-radius: 50%;
 }
+
+:deep(.van-calendar__top-info) {
+  position: static;
+  height: 4px;
+  line-height: 4px;
+  margin-bottom: 4px;
+}
 :deep(.van-calendar__bottom-info) {
   position: static;
-  height: 6px;
+  margin-top: 4px;
+  height: 12px;
+  line-height: 12px;
 }
+
 //:deep(.van-calendar__body) {
 //  transition: height ease 300ms;
 //}
 .calendarClose {
-  height: 140px;
+  height: 148px;
   :deep(.van-calendar__body) {
     overflow: hidden;
   }
 }
 .calendarOpen {
-  height: 300px;
+  height: 330px;
 }
 .van-calendar {
   transition: height ease-in-out 300ms;
+  .van-badge {
+    transform: translate(0, 0);
+  }
 }
 
 .link-btn {

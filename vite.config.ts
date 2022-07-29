@@ -3,11 +3,7 @@ import { defineConfig } from 'vite'
 import { createProxy } from './build/vite/proxy';
 import { createVitePlugins } from './build/vite/plugin';
 
-const VITE_PROXY = [
-	["/api","http://10.130.0.51:9093/api"],
-	// ["/sso_api", "http://10.130.0.37:9093"]
-]
-// const VITE_PROXY = [[]]
+const VITE_PROXY: [string, string][] = [["/api","http://10.130.0.51:9093/api"]]
 
 const viteEnv = {
   VITE_USE_MOCK: true
@@ -19,6 +15,8 @@ export default ({ command }) => {
   const isBuild = command === 'build';
 
   // @ts-ignore
+	// @ts-ignore
+	// @ts-ignore
 	return defineConfig({
     resolve: {
 			alias: [

@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-
+import set from 'lodash.set'
+import get from 'lodash.get'
 import { localStore } from '/@/utils/local-storage'
 import setting from '/@/setting/projectSetting'
 import { useAppStoreWithOut } from './app'
@@ -92,6 +93,16 @@ export const useCacheStore = defineStore(`__cache__`, {
     // 修改设置日数据
     setMonthDayData(month: string | number, day: string | number, value: any): void {
       this.monthData[month][day] = value
+    },
+    setMonthWorking(month: string | number, day: string | number, value: any): void {
+      set(this.monthData, [month, 'working', day], value)
+    },
+    setMonthStatus(month: string | number, day: string | number, value: any): void {
+      const old = get(this.monthData, [month, 'status', day])
+      set(this.monthData, [month, 'status', day], {
+        ...old,
+        ...value,
+      })
     },
     setCalendar(value: string) {
       this.calendar = value

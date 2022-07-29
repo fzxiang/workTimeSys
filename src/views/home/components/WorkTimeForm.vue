@@ -4,7 +4,7 @@
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
           <div class="pulldown-list">
-            <van-notice-bar v-if="tips" mode="closeable" left-icon="info-o">
+            <van-notice-bar v-if="tips" left-icon="info-o">
               {{ tips }}
             </van-notice-bar>
             <van-swipe-cell
@@ -220,9 +220,21 @@ watch(
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
-    const propsMonthDataItem = cacheStore.getMonthData[month]
-    if (propsMonthDataItem && propsMonthDataItem[$D]) {
-      formData.value = propsMonthDataItem[$D].map((item) => {
+
+    const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
+    // 状态赋值
+    if (monthStatus && monthStatus[$D]) {
+      const { status, reason } = monthStatus[$D]
+      if (status === 1) {
+        tips.value = reason
+      } else {
+        tips.value = undefined
+      }
+    }
+    // 表单赋值
+    const monthWorking = get(cacheStore.getMonthData, [month, 'working'])
+    if (monthWorking && monthWorking[$D]) {
+      formData.value = monthWorking[$D].map((item) => {
         return {
           ...item,
           w_value: parseInt(item.w_value * 100 + ''),
@@ -320,7 +332,9 @@ const onSubmit = async () => {
   } else {
     const day = dayjs(appStore.selectDate)
     const month = day.format('YYYY-MM')
-    cacheStore.setMonthDayData(month, day.date(), project)
+    cacheStore.setMonthWorking(month, day.date(), project)
+    cacheStore.setMonthStatus(month, day.date(), { status: 0 })
+    tips.value = undefined
     cacheStore.setWorking(project)
     showToast('提交成功')
     isEdit.value = false
@@ -420,10 +434,10 @@ function openDelete() {
 }
 
 .pull-refresh-open {
-  top: 300px;
+  top: 330px;
 }
 .pull-refresh-close {
-  top: 140px;
+  top: 148px;
 }
 .van-submit-bar .van-button {
   width: 90px;
