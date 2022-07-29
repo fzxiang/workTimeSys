@@ -13,7 +13,7 @@
               {{ childItem.project_name }}
             </h4>
             <div>
-              <van-tag plain :type="getStatusClass(childItem.status)">
+              <van-tag plain :type="getStatusClass(item.status)">
                 {{ parseInt(childItem.w_value * 100 + '') }}%
               </van-tag>
             </div>
@@ -29,8 +29,9 @@
 import dayjs from 'dayjs'
 import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
 import { getMonthWorkingHours } from '/@/api/home'
-import { useCacheStore } from '/@/store/modules/cache'
-import { useAppStore } from '/@/store/modules/app'
+// import { useCacheStore } from '/@/store/modules/cache'
+// import { useAppStore } from '/@/store/modules/app'
+import get from 'lodash.get'
 
 // const cacheStore = useCacheStore()
 // const appStore = useAppStore()
@@ -60,7 +61,6 @@ const getStatusClass = (status) => {
 onMounted(() => {
   initData(new Date())
 })
-
 async function initData(date) {
   isLoading.value = true
 
@@ -73,23 +73,25 @@ async function initData(date) {
   } else {
     active.value = 0
   }
-  const monthData = await getMonthWorkingHours({
+  const { status, working } = await getMonthWorkingHours({
     year: curDay.year(),
     month: curDay.month() + 1,
   })
   for (let i = 0; i < curDay.daysInMonth(); i++) {
-    const day = `${curDay.$y}-${curDay.$M + 1}-${i + 1}`
+    const day = `${curDay.year()}-${curDay.month() + 1}-${i + 1}`
     const week = MAP_WEEK[dayjs(day).day()]
-    if (monthData[i + 1]) {
+    if (working[i + 1]) {
       allData.value[i] = {
         day,
-        data: [...monthData[i + 1]],
+        data: working[i + 1],
+        status: status[i + 1]?.status,
         week,
       }
     } else {
       allData.value[i] = {
         day,
         data: [],
+        status: 0,
         week,
       }
     }
