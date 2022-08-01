@@ -92,56 +92,28 @@ function onSelect(value: Date) {
   appStore.setSelectData(value)
 }
 
-function handleFillStatus(scoped: CalendarDayItem) {
-  const { date } = scoped
-  const day = dayjs(date)
-  const month = day.format('YYYY-MM')
-  const monthData = get(cacheStore.getMonthData, [month, 'status'])
-  const $D = day.date()
-  let res = ''
-  // 未来日期不标记📌
-  if (day.isAfter(today, 'day')) {
-    res = 'van-badge-status-none'
-  }
-  // 已填写
-  else if (monthData && monthData[$D]) {
-    const { status } = monthData[$D]
-    if (status === 0) {
-      res = 'van-badge-status-ok'
-    }
-  }
-  // 未填写
-  else {
-    res = 'van-badge-status-no'
-  }
-  return res
-}
-
 const cssStyle = getComputedStyle(document.querySelector('body'))
-console.log(cssStyle.getPropertyValue('--van-text-color-3'))
 function handleStatusColor(scoped: CalendarDayItem) {
   const { date } = scoped
   const day = dayjs(date)
   const month = day.format('YYYY-MM')
   const monthData = get(cacheStore.getMonthData, [month, 'status'])
   const $D = day.date()
-  let res = ''
   // 未来日期不标记📌
   if (day.isAfter(today, 'day')) {
-    res = 'transparent'
+    return 'transparent'
   }
   // 已填写
-  else if (monthData && monthData[$D]) {
+  if (monthData && monthData[$D]) {
     const { status } = monthData[$D]
     if (status === 0) {
-      res = cssStyle.getPropertyValue('--van-success-color')
+      return cssStyle.getPropertyValue('--van-success-color')
+    } else if (status === 1) {
+      return cssStyle.getPropertyValue('--van-error-color')
+    } else if (status === 2) {
+      return cssStyle.getPropertyValue('--van-text-color-3')
     }
   }
-  // 未填写
-  else {
-    res = cssStyle.getPropertyValue('--van-text-color-3')
-  }
-  return res
 }
 
 function handleStats() {
