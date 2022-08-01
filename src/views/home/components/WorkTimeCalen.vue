@@ -52,7 +52,7 @@ const onMonthShow = async (obj) => {
     month: currentDate.month() + 1,
   })
   await cacheStore.setMonthData(currentDate.format('YYYY-MM'), monthData)
-  fix: 初始页面 获取月报数据后 触发selectDate
+  // fix: 初始页面 获取月报数据后 触发selectDate
   if (today.format('YYYY-MM') === currentDate.format('YYYY-MM')) {
     appStore.setSelectData(new Date())
   }
