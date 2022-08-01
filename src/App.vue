@@ -40,6 +40,15 @@ watch(
   },
   { immediate: true },
 )
+
+onMounted(() => {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    appStore.mode = 'dark'
+    // dark mode
+  } else {
+    appStore.mode = 'light'
+  }
+})
 </script>
 
 <style lang="less">

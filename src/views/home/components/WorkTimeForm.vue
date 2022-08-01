@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <van-submit-bar>
+    <van-submit-bar class="box-shadow">
       <template #default>
         <p>
           总工时:
@@ -448,9 +448,12 @@ function openDelete() {
 .pull-refresh-close {
   top: 130px;
 }
-.van-submit-bar .van-button {
-  width: 90px;
-  margin-left: 10px;
+.van-submit-bar {
+  background: var(--van-background-2);
+  .van-button {
+    width: 90px;
+    margin-left: 10px;
+  }
 }
 
 .success {
@@ -458,5 +461,11 @@ function openDelete() {
 }
 .danger {
   color: var(--van-danger-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .van-submit-bar {
+    background: var(--van-background);
+  }
 }
 </style>

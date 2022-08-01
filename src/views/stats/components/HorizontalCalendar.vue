@@ -10,7 +10,7 @@
           round
           :key="item.key"
           @click="handleClick(item)"
-          :plain="currentMon === item.key"
+          :plain="handleBtnStatus(item)"
         >
           {{ item.month + 1 }} 月
         </van-button>
@@ -53,6 +53,14 @@ function handleClick(date) {
   year.value = date.year
   emits('change', date.key)
 }
+
+function handleBtnStatus(item) {
+  if (appStore.mode === 'dark') {
+    return currentMon.value !== item.key
+  } else {
+    return currentMon.value === item.key
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -86,5 +94,11 @@ h4 {
 .van-button--plain {
   animation-duration: 0.5s;
   animation-name: bounceIn;
+}
+
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: var(--van-background);
+  }
 }
 </style>
