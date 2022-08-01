@@ -39,7 +39,6 @@ const appStore = useAppStore()
 const cacheStore = useCacheStore()
 const router = useRouter()
 
-appStore.setSelectData(new Date())
 const calendarRef = ref()
 const today = dayjs()
 const minData = new Date(today.year(), today.month() - 5)
@@ -47,12 +46,16 @@ console.log(minData)
 const calendarClass = ref('calendarClose')
 
 const onMonthShow = async (obj) => {
-  const today = dayjs(obj.date)
+  const currentDate = dayjs(obj.date)
   const monthData = await getMonthWorkingHours({
-    year: today.year(),
-    month: today.month() + 1,
+    year: currentDate.year(),
+    month: currentDate.month() + 1,
   })
-  await cacheStore.setMonthData(today.format('YYYY-MM'), monthData)
+  await cacheStore.setMonthData(currentDate.format('YYYY-MM'), monthData)
+  fix: 初始页面 获取月报数据后 触发selectDate
+  if (today.format('YYYY-MM') === currentDate.format('YYYY-MM')) {
+    appStore.setSelectData(new Date())
+  }
 }
 
 // fix: 初始日历没有 偏移

@@ -4,7 +4,7 @@
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
           <div class="pulldown-list">
-            <van-notice-bar v-if="tips" left-icon="info-o">
+            <van-notice-bar v-if="tips" left-icon="info-o" :color="tipsColor" :background="tipsBgColor">
               {{ tips }}
             </van-notice-bar>
             <van-swipe-cell
@@ -213,6 +213,10 @@ const totalTime = ref(100)
 const isEdit = ref(false)
 // 状态提示
 const tips = ref()
+const tipsColor = ref()
+const tipsBgColor = ref()
+const cssStyle = getComputedStyle(document.querySelector('body'))
+
 watch(
   () => appStore.selectDate,
   (val, oldVal) => {
@@ -227,6 +231,12 @@ watch(
       const { status, reason } = monthStatus[$D]
       if (status === 1) {
         tips.value = reason
+        tipsColor.value = cssStyle.getPropertyValue('--van-warn-color')
+        tipsBgColor.value = ''
+      } else if (status === 2) {
+        tips.value = reason
+        tipsColor.value = cssStyle.getPropertyValue('--van-text-color-2')
+        tipsBgColor.value = cssStyle.getPropertyValue('--van-background')
       } else {
         tips.value = undefined
       }

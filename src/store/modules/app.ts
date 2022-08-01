@@ -11,6 +11,7 @@ interface AppState {
   calendar: 'close' | 'open'
   // Page loading status
   pageLoading?: boolean
+  userAgent: string
 }
 
 const { width } = useWindowSize()
