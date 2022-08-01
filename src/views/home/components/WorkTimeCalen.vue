@@ -153,7 +153,7 @@ function handleStats() {
 //  transition: height ease 300ms;
 //}
 .calendarClose {
-  height: 148px;
+  height: 130px;
   :deep(.van-calendar__body) {
     overflow: hidden;
   }

@@ -19,8 +19,8 @@ const wrapperStyle = {
 }
 const themeVars = {
   badgeDotSize: '5px',
-  CalendarSelectedDaySize: '48px',
-  // CalendarDayHeight: '50px',
+  CalendarSelectedDaySize: '44px',
+  CalendarDayHeight: '48px',
 }
 
 const appStore = useAppStore()

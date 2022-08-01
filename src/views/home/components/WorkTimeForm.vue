@@ -425,7 +425,6 @@ function openDelete() {
   position: absolute;
   left: 0;
   right: 0;
-  top: 140px;
   bottom: 60px;
   //padding: 10px 0 ;
   background: var(--van-background);
@@ -447,7 +446,7 @@ function openDelete() {
   top: 330px;
 }
 .pull-refresh-close {
-  top: 148px;
+  top: 130px;
 }
 .van-submit-bar .van-button {
   width: 90px;
