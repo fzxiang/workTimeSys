@@ -23,8 +23,6 @@
 import dayjs from 'dayjs'
 import { useAppStore } from '/@/store/modules/app'
 import { useTitle } from '@vueuse/core'
-import { useSound } from '@vueuse/sound'
-import popUpOn from '/@/assets/sound/pop.wav'
 
 const appStore = useAppStore()
 

@@ -29,12 +29,12 @@
 import dayjs from 'dayjs'
 import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
 import { getMonthWorkingHours } from '/@/api/home'
-// import { useCacheStore } from '/@/store/modules/cache'
-// import { useAppStore } from '/@/store/modules/app'
-import get from 'lodash.get'
+import { useSound } from '@vueuse/sound'
+import popUpOn from '/@/assets/sound/pop.wav'
 
-// const cacheStore = useCacheStore()
-// const appStore = useAppStore()
+// 声效
+const onSound = useSound(popUpOn, { volume: 0.25 })
+
 const isNoData = ref(false)
 // 头部日历
 const isLoading = ref(false)
@@ -66,10 +66,11 @@ async function initData(date) {
 
   const today = dayjs(new Date())
   const curDay = dayjs(date)
+  console.log(today, curDay)
   if (today.month() === curDay.month()) {
     active.value = today.date() - 1
-  } else if (today.isAfter(curDay)) {
-    active.value = curDay.date() - 1
+  } else if (curDay.isBefore(today)) {
+    active.value = curDay.daysInMonth() - 1
   } else {
     active.value = 0
   }
@@ -96,6 +97,8 @@ async function initData(date) {
       }
     }
   }
+
+  onSound.play()
 
   isLoading.value = false
 }
