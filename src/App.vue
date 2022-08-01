@@ -40,9 +40,14 @@ watch(
   },
   { immediate: true },
 )
+
+// 初始
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  appStore.mode = 'dark'
+}
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
   const mode = event.matches ? 'dark' : 'light'
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (mode === 'dark') {
     appStore.mode = 'dark'
     // dark mode
   } else {
