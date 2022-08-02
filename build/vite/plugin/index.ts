@@ -23,9 +23,9 @@ export function createVitePlugins(viteEnv, isBuild) {
     vueJsx(),
     visualizer(),
 
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-    }),
+    // legacy({
+    //   targets: ['defaults', 'not IE 11'],
+    // }),
 
     AutoImport({
       // Auto import functions from Vue, e.g. ref, reactive, toRef...
@@ -65,8 +65,8 @@ export function createVitePlugins(viteEnv, isBuild) {
 
     viteVConsole({
       entry: [path.resolve('src/main.ts')],
-      localEnabled: !isBuild,
-      enabled: false,
+      localEnabled: isBuild,
+      enabled: true,
       config: {
         maxLogNumber: 1000,
         theme: 'light',
