@@ -116,6 +116,8 @@ function handleStatusColor(scoped: CalendarDayItem) {
     } else if (status === 2) {
       return cssStyle.getPropertyValue('--van-text-color-3')
     }
+  } else {
+    return cssStyle.getPropertyValue('--van-text-color-3')
   }
 }
 

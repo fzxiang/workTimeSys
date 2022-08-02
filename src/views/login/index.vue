@@ -11,29 +11,15 @@
         <van-button type="primary" block @click="handleSSOLogin"> SSO登录 </van-button>
       </van-col>
     </van-row>
-    <!--  <van-switch v-model="checked" size="18px" />-->
   </div>
 </template>
 
 <script setup lang="ts">
-import { localStore } from '/@/utils/local-storage'
-import { useAppStore } from '/@/store/modules/app'
-
-const themeStore = localStore.get('theme')
-const checked = ref<boolean>(themeStore === 'dark')
-const appStore = useAppStore()
-
-watch(checked, (val) => {
-  if (val) {
-    appStore.mode = 'dark'
-    localStore.set('theme', 'dark', false)
-  } else {
-    appStore.mode = 'light'
-    localStore.set('theme', 'light', false)
-  }
+const { VITE_APP_API_BASE_URL } = import.meta.env
+onBeforeMount(() => {
+  location.href = location.origin + VITE_APP_API_BASE_URL + '/ssoLogin'
 })
 
-const { VITE_APP_API_BASE_URL } = import.meta.env
 function handleSSOLogin() {
   location.href = location.origin + VITE_APP_API_BASE_URL + '/ssoLogin'
 }

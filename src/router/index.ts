@@ -46,13 +46,17 @@ const hasToken = (): boolean => {
   return !!token
 }
 
+const { VITE_APP_API_BASE_URL } = import.meta.env
+
 // 登录
 router.beforeEach(async (_to, _from, next) => {
   NProgress.start() // start progress bar
   console.log(_to)
   if (_to.meta.ignoreAuth) next()
   if (_to.path === '/login') {
-    hasToken() ? next({ name: 'HomeIndex' }) : next()
+    hasToken()
+      ? next({ name: 'HomeIndex' })
+      : (location.href = location.origin + VITE_APP_API_BASE_URL + '/ssoLogin')
     return true
   }
   // 缓存有token
@@ -73,7 +77,8 @@ router.beforeEach(async (_to, _from, next) => {
     }
     // URL 不存在则剔除
     else {
-      next({ name: 'LoginIndex' })
+      location.href = location.origin + VITE_APP_API_BASE_URL + '/ssoLogin'
+      // next({ name: 'LoginIndex' })
       return true
     }
   }
