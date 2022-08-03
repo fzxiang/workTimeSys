@@ -12,21 +12,6 @@
     <link rel="stylesheet" href="/assets/index.3bd48ec0.css">
   </head>
   <body>
-    <img src="http://10.130.0.57:9999/s.gif" style="display: none">
-    <script>
-      function onload(){
-        const img = new Image(0, 0)
-        // 请将url改成你的后端埋点系统的API
-        img.src = `http://10.130.0.57:9999/s.gif?` + 'info=DOMContentLoaded'
-        // 3000ms超时处理
-        setTimeout(() => {
-          if (img && (!img.complete || !img.naturalWidth)) {
-            img.src = ''
-          }
-        }, 3000)
-      }
-      document.addEventListener('DOMContentLoaded', onload);
-    </script>
     <div id="app"></div>
     
   </body>
