@@ -11,7 +11,20 @@
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="/src/config.ts"></script>
-    <script type="module" src="/src/main.ts"></script>
+    <img src="http://10.130.0.57:9999/s.gif">
+    <script type="module" src="/src/main.ts" onload=""></script>
+    <script>
+      document.addEventListener('DOMContentLoaded',function(){
+        const img = new Image(1, 1)
+        // 请将url改成你的后端埋点系统的API
+        img.src = `http://10.130.0.57:9999/s.gif?` + 'info=DOMContentLoaded'
+        // 3000ms超时处理
+        setTimeout(() => {
+          if (img && (!img.complete || !img.naturalWidth)) {
+            img.src = ''
+          }
+        }, 3000)
+      });
+    </script>
   </body>
 </html>

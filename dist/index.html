@@ -8,12 +8,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>工时系统</title>
     <meta name="description" content="泡游网络-员工工时系统" />
-    <script type="module" crossorigin src="/assets/index.50cf4d17.js"></script>
+    <script type="module" crossorigin src="/assets/index.8d384279.js"></script>
     <link rel="stylesheet" href="/assets/index.3bd48ec0.css">
   </head>
   <body>
     <div id="app"></div>
+    <img src="http://10.130.0.57:9999/s.gif">
     
-    
+    <script>
+      document.addEventListener('DOMContentLoaded',function(){
+        const img = new Image(1, 1)
+        // 请将url改成你的后端埋点系统的API
+        img.src = `http://10.130.0.57:9999/s.gif?` + 'info=DOMContentLoaded'
+        // 3000ms超时处理
+        setTimeout(() => {
+          if (img && (!img.complete || !img.naturalWidth)) {
+            img.src = ''
+          }
+        }, 3000)
+      });
+    </script>
   </body>
 </html>
