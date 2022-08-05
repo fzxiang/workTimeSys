@@ -251,8 +251,8 @@ watch(
         }
       })
     } else {
-      if (cacheStore.working.length !== 0) {
-        formData.value = cacheStore.working.map((item) => {
+      if (cacheStore.getWorking.length !== 0) {
+        formData.value = cacheStore.getWorking.map((item) => {
           return {
             ...item,
             w_value: parseInt(item.w_value * 100 + ''),
@@ -266,7 +266,7 @@ watch(
       clearTimeout(timer)
     }, 300)
   },
-  { immediate: true },
+  // { immediate: false },
 )
 
 watchEffect(() => {
