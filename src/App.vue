@@ -21,6 +21,7 @@ const themeVars = {
   badgeDotSize: '5px',
   CalendarSelectedDaySize: '44px',
   CalendarDayHeight: '48px',
+  BadgeDotSize: '6px',
 }
 
 const appStore = useAppStore()

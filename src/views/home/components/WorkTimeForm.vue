@@ -4,7 +4,12 @@
       <div ref="scroll" class="pulldown-wrapper">
         <div class="pulldown-content">
           <div class="pulldown-list">
-            <van-notice-bar v-if="tips" left-icon="info-o" :color="tipsColor" :background="tipsBgColor">
+            <van-notice-bar
+              v-if="tips"
+              left-icon="info-o"
+              :color="tipsColor"
+              :background="tipsBgColor"
+            >
               {{ tips }}
             </van-notice-bar>
             <van-swipe-cell
@@ -237,9 +242,9 @@ watch(
         tips.value = reason
         tipsColor.value = cssStyle.getPropertyValue('--van-text-color-2')
         tipsBgColor.value = cssStyle.getPropertyValue('--van-background')
-      } else {
-        tips.value = undefined
       }
+    } else {
+      tips.value = undefined
     }
     // 表单赋值
     const monthWorking = get(cacheStore.getMonthData, [month, 'working'])
@@ -297,16 +302,19 @@ const checkSubmit = (value) => {
 }
 // 选择日期后 执行是否编辑状态
 function handleEditLogic(today, curDay) {
-  // 如果是当天 则为编辑状态
-  if (today.format('YYYY-MM-DD') === curDay.format('YYYY-MM-DD')) {
-    isEdit.value = true
-    return true
-  }
+  // 如果是之前 则为编辑状态
+  // if (today.format('YYYY-MM-DD') === curDay.format('YYYY-MM-DD')) {
+  //   isEdit.value = false
+  //   return true
+  // }
   const year = curDay.format('YYYY-MM')
   const date = curDay.date()
-  const status = get(cacheStore.monthData, [year, 'status', date, 'status'])
+  // 状态  // status 1: 填写错误 0 填写成功 2: 未提交
+  // const status = get(cacheStore.monthData, [year, 'status', date, 'status'])
+  // 填写数据
+  const fillData = get(cacheStore.monthData, [year, 'working', date])
   // 日期未提交编写  则为编辑状态
-  isEdit.value = status !== 0
+  isEdit.value = !fillData;
 }
 const checkTotal = computed(() => {
   let res = true
@@ -364,7 +372,7 @@ function handleAdd() {
 // 删除
 function handleDelete(index: number) {
   if (formData.value.length === 1) {
-    showToast('最少填写一个项目工时')
+    showToast({ message: '最少填写一个项目工时\n 或将工时填写0%', duration: 3500 })
     return
   }
   selectedIndex.value = 0
