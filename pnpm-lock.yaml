@@ -1293,7 +1293,7 @@ packages:
         optional: true
     dependencies:
       vue: registry.npmmirror.com/vue/3.2.37
-      vue-demi: registry.npmmirror.com/vue-demi/0.13.6_vue@3.2.37
+      vue-demi: registry.npmmirror.com/vue-demi/0.13.8_vue@3.2.37
 
   registry.npmmirror.com/@vueuse/sound/1.1.7_vue@3.2.37:
     resolution: {integrity: sha512-rn4uIeEz9SqZ82KroFQ4OGXRIZ8cLlvfk/CxfZBBkjfRjE1VpanzKYCAoN3dD716dBfLPsAa6Aq7VV6TpZCpVw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@vueuse/sound/-/sound-1.1.7.tgz}
@@ -1302,7 +1302,7 @@ packages:
     version: 1.1.7
     dependencies:
       howler: registry.npmmirror.com/howler/2.2.3
-      vue-demi: registry.npmmirror.com/vue-demi/0.13.6_3nmzzoefrdru4lagmst3ha3a3q
+      vue-demi: registry.npmmirror.com/vue-demi/0.13.8_3nmzzoefrdru4lagmst3ha3a3q
     optionalDependencies:
       '@vue/composition-api': registry.npmmirror.com/@vue/composition-api/1.7.0_vue@3.2.37
     transitivePeerDependencies:
@@ -5920,11 +5920,11 @@ packages:
     dependencies:
       vue: registry.npmmirror.com/vue/3.2.37
 
-  registry.npmmirror.com/vue-demi/0.13.6_3nmzzoefrdru4lagmst3ha3a3q:
-    resolution: {integrity: sha512-02NYpxgyGE2kKGegRPYlNQSL1UWfA/+JqvzhGCOYjhfbLWXU5QQX0+9pAm/R2sCOPKr5NBxVIab7fvFU0B1RxQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.6.tgz}
-    id: registry.npmmirror.com/vue-demi/0.13.6
+  registry.npmmirror.com/vue-demi/0.13.8_3nmzzoefrdru4lagmst3ha3a3q:
+    resolution: {integrity: sha512-Vy1zbZhCOdsmvGR6tJhAvO5vhP7eiS8xkbYQSoVa7o6KlIy3W8Rc53ED4qI4qpeRDjv3mLfXSEpYU6Yq4pgXRg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.8.tgz}
+    id: registry.npmmirror.com/vue-demi/0.13.8
     name: vue-demi
-    version: 0.13.6
+    version: 0.13.8
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true
@@ -5939,11 +5939,11 @@ packages:
       vue: registry.npmmirror.com/vue/3.2.37
     dev: false
 
-  registry.npmmirror.com/vue-demi/0.13.6_vue@3.2.37:
-    resolution: {integrity: sha512-02NYpxgyGE2kKGegRPYlNQSL1UWfA/+JqvzhGCOYjhfbLWXU5QQX0+9pAm/R2sCOPKr5NBxVIab7fvFU0B1RxQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.6.tgz}
-    id: registry.npmmirror.com/vue-demi/0.13.6
+  registry.npmmirror.com/vue-demi/0.13.8_vue@3.2.37:
+    resolution: {integrity: sha512-Vy1zbZhCOdsmvGR6tJhAvO5vhP7eiS8xkbYQSoVa7o6KlIy3W8Rc53ED4qI4qpeRDjv3mLfXSEpYU6Yq4pgXRg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.13.8.tgz}
+    id: registry.npmmirror.com/vue-demi/0.13.8
     name: vue-demi
-    version: 0.13.6
+    version: 0.13.8
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true

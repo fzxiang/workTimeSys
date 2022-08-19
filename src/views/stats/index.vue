@@ -1,7 +1,12 @@
 <template>
-  <vue-horizontal-calendar @change="handleChange" />
-  <van-pull-refresh v-show="!isNoData" v-model="isLoading" @refresh="onRefresh" style="margin-top: 92px">
-    <div style="padding: 10px 15px">
+  <van-sticky>
+    <div class="header">
+      <vue-horizontal-calendar @change="handleChange" />
+    </div>
+  </van-sticky>
+  <dash-board :statusData="statusData" :workingData="workingData" />
+  <div class="card-refresh">
+    <van-pull-refresh v-show="!isNoData" v-model="isLoading" @refresh="onRefresh">
       <van-steps direction="vertical" :active="active">
         <van-step v-for="item in allData" :key="item.day">
           <div class="flex-wrap" style="margin-bottom: 10px">
@@ -20,14 +25,16 @@
           </div>
         </van-step>
       </van-steps>
-    </div>
-  </van-pull-refresh>
+    </van-pull-refresh>
+  </div>
   <van-empty v-show="isNoData" description="暂无数据" />
 </template>
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import VueHorizontalCalendar from '/@/views/stats/components/HorizontalCalendar.vue'
+import DashBoard from '/@/views/stats/components/DashBoard.vue'
+
 import { getMonthWorkingHours } from '/@/api/home'
 import { useSound } from '@vueuse/sound'
 import popUpOn from '/@/assets/sound/pop.wav'
@@ -61,12 +68,14 @@ const getStatusClass = (status) => {
 onMounted(() => {
   initData(new Date())
 })
+
+const statusData = ref()
+const workingData = ref()
 async function initData(date) {
   isLoading.value = true
 
   const today = dayjs(new Date())
   const curDay = dayjs(date)
-  console.log(today, curDay)
   if (today.month() === curDay.month()) {
     active.value = today.date() - 1
   } else if (curDay.isBefore(today)) {
@@ -78,6 +87,8 @@ async function initData(date) {
     year: curDay.year(),
     month: curDay.month() + 1,
   })
+  statusData.value = status
+  workingData.value = working
   for (let i = 0; i < curDay.daysInMonth(); i++) {
     const day = `${curDay.year()}-${curDay.month() + 1}-${i + 1}`
     const week = MAP_WEEK[dayjs(day).day()]
@@ -105,6 +116,20 @@ async function initData(date) {
 </script>
 
 <style lang="less" scoped>
+.header {
+  background: var(--van-blue);
+  padding: 15px 0;
+  //position: fixed;
+  //top: 0;
+  //left: 0;
+  //right: 0;
+  //z-index: 9;
+}
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: var(--van-background);
+  }
+}
 .van-steps {
   text-align: left;
   h4,
@@ -121,5 +146,10 @@ async function initData(date) {
   .danger {
     color: var(--van-tag-danger-color);
   }
+}
+.card-refresh {
+  margin: var(--van-padding-xs);
+  border-radius: var(--van-padding-base);
+  overflow: hidden;
 }
 </style>

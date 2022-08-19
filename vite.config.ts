@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import { createProxy } from './build/vite/proxy';
 import { createVitePlugins } from './build/vite/plugin';
 
-const VITE_PROXY: [string, string][] = [["/api","http://10.130.0.51:9093/api"]]
+const VITE_PROXY: [string, string][] = [["/api","http://workinghour.xmpaoyou.com/api"]]
 
 const viteEnv = {
   VITE_USE_MOCK: true

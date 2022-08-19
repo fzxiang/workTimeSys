@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div>
     <h4 v-if="appStore.userAgent === 'desktop'">{{ year }} 年</h4>
     <van-swipe :show-indicators="false" :loop="false">
       <van-swipe-item>
@@ -64,17 +64,9 @@ function handleBtnStatus(item) {
 </script>
 
 <style lang="less" scoped>
-.header {
-  background: var(--van-blue);
-  padding: 15px 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9;
-  h4 {
-    margin-top: 0;
-  }
+h4 {
+  color: var(--van-button-primary-color);
+  margin: 10px auto;
 }
 .van-swipe-item {
   display: flex;
@@ -86,19 +78,8 @@ function handleBtnStatus(item) {
   }
 }
 
-h4 {
-  color: var(--van-button-primary-color);
-  margin: 10px auto;
-}
-
 .van-button--plain {
   animation-duration: 0.5s;
   animation-name: bounceIn;
-}
-
-@media (prefers-color-scheme: dark) {
-  .header {
-    background: var(--van-background);
-  }
 }
 </style>
