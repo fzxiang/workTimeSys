@@ -12,7 +12,6 @@ declare module '@vue/runtime-core' {
     VanBadge: typeof import('vant/es')['Badge']
     VanButton: typeof import('vant/es')['Button']
     VanCalendar: typeof import('vant/es')['Calendar']
-    VanCard: typeof import('vant/es')['Card']
     VanCellGroup: typeof import('vant/es')['CellGroup']
     VanCol: typeof import('vant/es')['Col']
     VanConfigProvider: typeof import('vant/es')['ConfigProvider']
