@@ -240,7 +240,7 @@ watch(
       {
         project_id: 0,
         project_name: '',
-        w_value: 100,
+        w_value: 0,
       },
     ]
 
