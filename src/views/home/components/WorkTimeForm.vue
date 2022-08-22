@@ -136,7 +136,7 @@
 
 <script setup lang="ts">
 import type { PickerConfirmEventParams } from 'vant'
-import { showToast } from 'vant'
+import { showToast, showConfirmDialog } from 'vant'
 import BScroll from '@better-scroll/core'
 import MouseWheel from '@better-scroll/mouse-wheel'
 import PullDown from '@better-scroll/pull-down'
@@ -242,6 +242,8 @@ watch(
         tips.value = reason
         tipsColor.value = cssStyle.getPropertyValue('--van-text-color-2')
         tipsBgColor.value = cssStyle.getPropertyValue('--van-background')
+      } else {
+        tips.value = undefined
       }
     } else {
       tips.value = undefined
@@ -314,7 +316,7 @@ function handleEditLogic(today, curDay) {
   // 填写数据
   const fillData = get(cacheStore.monthData, [year, 'working', date])
   // 日期未提交编写  则为编辑状态
-  isEdit.value = !fillData;
+  isEdit.value = !fillData
 }
 const checkTotal = computed(() => {
   let res = true
@@ -328,6 +330,12 @@ const onSubmit = async () => {
     showToast('总工时必须等于100%或者0%')
     return true
   }
+  // if ([6, 7].indexOf(dayjs(appStore.selectDate).day())) {
+  //   showConfirmDialog({
+  //     title: '周六日是否'
+  //   })
+  //   console.log(dayjs(appStore.selectDate))
+  // }
   const projectSet = new Set()
   const project = formData.value.map((item) => {
     projectSet.add(item.project_id)
