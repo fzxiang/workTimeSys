@@ -89,6 +89,19 @@
                 />
               </template>
             </van-swipe-cell>
+
+            <van-skeleton v-if="isEdit" :row="1" :row-width="['100%']" round :loading="loading">
+              <van-button
+                class="van-btn-template"
+                type="primary"
+                size="normal"
+                plain
+                block
+                @click="handleUseTemp"
+              >
+                使用摸版
+              </van-button>
+            </van-skeleton>
           </div>
         </div>
       </div>
@@ -205,13 +218,7 @@ interface FormData {
   project_name: number | string
   w_value: number
 }
-const formData = ref<[FormData]>([
-  {
-    project_id: 0,
-    project_name: '',
-    w_value: 100,
-  },
-])
+const formData = ref<[FormData]>()
 const showPicker = ref(false)
 const totalTime = ref(100)
 // 编辑和提交状态
@@ -229,6 +236,13 @@ watch(
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
+    formData.value = [
+      {
+        project_id: 0,
+        project_name: '',
+        w_value: 100,
+      },
+    ]
 
     const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
     // 状态赋值
@@ -257,16 +271,17 @@ watch(
           w_value: parseInt(item.w_value * 100 + ''),
         }
       })
-    } else {
-      if (cacheStore.getWorking.length !== 0) {
-        formData.value = cacheStore.getWorking.map((item) => {
-          return {
-            ...item,
-            w_value: parseInt(item.w_value * 100 + ''),
-          }
-        })
-      }
     }
+    // else {
+    //   if (cacheStore.getWorking.length !== 0) {
+    //     formData.value = cacheStore.getWorking.map((item) => {
+    //       return {
+    //         ...item,
+    //         w_value: parseInt(item.w_value * 100 + ''),
+    //       }
+    //     })
+    //   }
+    // }
     handleLogic()
     const timer = setTimeout(() => {
       loading.value = false
@@ -304,11 +319,6 @@ const checkSubmit = (value) => {
 }
 // 选择日期后 执行是否编辑状态
 function handleEditLogic(today, curDay) {
-  // 如果是之前 则为编辑状态
-  // if (today.format('YYYY-MM-DD') === curDay.format('YYYY-MM-DD')) {
-  //   isEdit.value = false
-  //   return true
-  // }
   const year = curDay.format('YYYY-MM')
   const date = curDay.date()
   // 状态  // status 1: 填写错误 0 填写成功 2: 未提交
@@ -355,16 +365,17 @@ const onSubmit = async () => {
   })
   if (res && res.code !== 0) {
     showToast(res.msg)
-  } else {
-    const day = dayjs(appStore.selectDate)
-    const month = day.format('YYYY-MM')
-    cacheStore.setMonthWorking(month, day.date(), project)
-    cacheStore.setMonthStatus(month, day.date(), { status: 0 })
-    tips.value = undefined
-    cacheStore.setWorking(project)
-    showToast('提交成功')
-    isEdit.value = false
+    return
   }
+  // 删除项目操作
+  const day = dayjs(appStore.selectDate)
+  const month = day.format('YYYY-MM')
+  cacheStore.setMonthWorking(month, day.date(), project)
+  cacheStore.setMonthStatus(month, day.date(), { status: 0 })
+  tips.value = undefined
+  cacheStore.setWorking(project)
+  showToast('提交成功')
+  isEdit.value = false
 }
 
 // 新增
@@ -379,10 +390,10 @@ function handleAdd() {
 
 // 删除
 function handleDelete(index: number) {
-  if (formData.value.length === 1) {
-    showToast({ message: '最少填写一个项目工时\n 或将工时填写0%', duration: 3500 })
-    return
-  }
+  // if (formData.value.length === 1) {
+  //   showToast({ message: '最少填写一个项目工时\n 或将工时填写0%', duration: 3500 })
+  //   return
+  // }
   selectedIndex.value = 0
   formData.value.splice(index, 1)
   handleLogic()
@@ -408,9 +419,32 @@ function openDelete() {
     })
   })
 }
+
+// 使用摸版
+function handleUseTemp() {
+  showConfirmDialog({
+    title: '提示',
+    message: '是否使用上一次提交的摸版？',
+  })
+    .then(() => {
+      if (cacheStore.getWorking.length !== 0) {
+        formData.value = cacheStore.getWorking.map((item) => {
+          return {
+            ...item,
+            w_value: parseInt(item.w_value * 100 + ''),
+          }
+        })
+      }
+    })
+    .catch(() => {})
+}
 </script>
 
 <style scoped lang="less">
+.van-swipe-cell {
+  animation-duration: 0.5s;
+  animation-name: slideInLeft;
+}
 .van-form * {
   transition: all 300ms ease-in;
 }
@@ -483,5 +517,10 @@ function openDelete() {
   .van-submit-bar {
     background: var(--van-background);
   }
+}
+
+.van-btn-template {
+  border: none;
+  margin-top: 15px;
 }
 </style>
