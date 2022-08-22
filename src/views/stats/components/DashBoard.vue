@@ -1,6 +1,7 @@
 <template>
   <div class="card">
     <h1>填写统计·天</h1>
+    <apex-charts type="donut" :options="chartOptions" :series="series" style="text-align: left" />
     <van-grid :column-num="3" :border="false">
       <van-grid-item>
         <template #default>
@@ -26,16 +27,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { useCacheStore } from '/@/store/modules/cache'
-import { useTitle } from '@vueuse/core'
-
-import { getMonthWorkingHours } from '/@/api/home'
-
-// title
-const siteTitle = useTitle()
-const today = dayjs(new Date())
-const year = ref(today.year())
-siteTitle.value = '统计 · ' + year.value
+import ApexCharts from 'vue3-apexcharts'
 
 const normal = ref(0)
 const unfill = ref(0)
@@ -46,6 +38,19 @@ enum Status {
   error = 1,
   other = 2,
 }
+
+interface Working {
+  id?: number
+  name?: string
+  project_id: number
+  project_name: string
+  w_date: string
+  status?: number
+  w_value: number | string
+}
+
+const series = ref()
+
 watchEffect(() => {
   const status = toRaw(props.statusData)
   normal.value = 0
@@ -53,7 +58,7 @@ watchEffect(() => {
   fillError.value = 0
   const working = toRaw(props.workingData)
   if (status) {
-    const statusData = Object.values(status)
+    const statusData = Object.values(status) as Working[]
     statusData.forEach((item) => {
       if (item.status === Status.success) {
         normal.value++
@@ -67,11 +72,58 @@ watchEffect(() => {
       }
     })
     normal.value = statusData.filter((item) => item.status === Status.success).length
-    const errorArr = statusData.filter((item) => item.status === Status.error)
-    // errorArr.
-    console.log(errorArr, working)
   }
+  series.value = [normal.value, unfill.value, fillError.value]
 })
+
+const cssStyle = getComputedStyle(document.querySelector('body'))
+
+// 图形
+const chartOptions = {
+  chart: {
+    type: 'donut',
+  },
+  colors: [
+    cssStyle.getPropertyValue('--van-primary-color'),
+    cssStyle.getPropertyValue('--van-warning-color'),
+    cssStyle.getPropertyValue('--van-danger-color'),
+  ],
+  labels: ['正常', '未填', '已填异常'],
+  dataLabels: {
+    enabled: true,
+    formatter: function (val, { seriesIndex }) {
+      return series.value[seriesIndex]
+    },
+    dropShadow: {
+      enabled: false,
+    },
+  },
+  plotOptions: {
+    pie: {
+      customScale: 1,
+      startAngle: -90,
+      endAngle: 90,
+      offsetY: 10,
+    },
+  },
+  grid: {
+    padding: {
+      bottom: -80,
+    },
+  },
+  responsive: [
+    {
+      options: {
+        chart: {
+          width: 200,
+        },
+        legend: {
+          position: 'bottom',
+        },
+      },
+    },
+  ],
+}
 </script>
 
 <style lang="less" scoped>

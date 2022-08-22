@@ -20,7 +20,7 @@ const { width } = useWindowSize()
 export const useAppStore = defineStore(`__app__`, {
   state: (): AppState => ({
     // light || dark
-    mode: undefined,
+    mode: 'light',
     selectDate: new Date(),
     userAgent: width.value < 820 ? 'mobile' : 'desktop',
     calendar: width.value < 820 ? 'close' : 'open',
