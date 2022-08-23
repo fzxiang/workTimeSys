@@ -28,6 +28,12 @@ export const routes = [
     component: () => import('/@/views/stats/index.vue'),
     meta: { title: '统计' /*, ignoreAuth: true*/ },
   },
+  {
+    path: '/helper',
+    name: 'HelperIndex',
+    component: () => import('/@/views/helper/index.vue'),
+    meta: { title: '说明' /*, ignoreAuth: true*/ },
+  },
   { path: '/:path(.*)', component: () => import('/@/views/NotFound.vue') },
 ]
 

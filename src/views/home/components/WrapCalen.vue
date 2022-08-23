@@ -22,7 +22,12 @@
       <!--        <span>工作日</span>-->
       <!--      </template>-->
     </van-calendar>
-    <van-button class="link-btn" plain type="primary" @click="handleStats">工时统计</van-button>
+    <van-button class="position-left link-btn" plain type="primary" @click="handleHelper">
+      <van-icon name="question-o" size="20px" />
+    </van-button>
+    <van-button class="position-right link-btn" plain type="primary" @click="handleStats">
+      工时统计
+    </van-button>
   </div>
 </template>
 
@@ -127,6 +132,13 @@ function handleStats() {
     // query: { date: store.selectDate },
   })
 }
+
+function handleHelper() {
+  router.push({
+    path: '/helper',
+    // query: { date: store.selectDate },
+  })
+}
 </script>
 
 <style lang="less" scoped>
@@ -169,11 +181,17 @@ function handleStats() {
     transform: translate(0, 0);
   }
 }
-
-.link-btn {
+.position-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.position-right {
   position: absolute;
   top: 0;
   right: 0;
+}
+.link-btn {
   border: none;
   font-weight: normal;
 }

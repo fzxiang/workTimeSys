@@ -106,7 +106,7 @@
       <template #button>
         <div v-show="!isEdit">
           <van-button round plain type="warning" size="normal" @click="handleReset">
-            一键重置
+            重置
           </van-button>
           <van-button round type="success" v-show="!isEdit" @click="isEdit = true">
             修改
@@ -420,8 +420,7 @@ function openDelete() {
 // 使用模版
 function handleReset() {
   showConfirmDialog({
-    title: '提示',
-    message: '是否一键重置工时？',
+    title: `是否重置当前（${dayjs(appStore.selectDate).format('YYYY-MM-DD')}）工时？`,
   })
     .then(() => {
       formData.value.splice(0)
