@@ -86,7 +86,7 @@ async function initData(date) {
       allData.value[i] = {
         day,
         data: [],
-        status: 0,
+        status: status[i + 1]?.status,
         week,
       }
     }

@@ -31,7 +31,6 @@ enum Status {
   other = 2,
 }
 const getStatusClass = (status) => {
-  console.log(status)
   if (status === Status.success) return 'primary'
   else if (status === Status.error) return 'danger'
 }
@@ -59,9 +58,6 @@ const getStatusClass = (status) => {
   margin: var(--van-padding-xs);
   border-radius: var(--van-padding-base);
   overflow: hidden;
-}
-.primary {
-  color: var(--van-primary-color);
 }
 .danger {
   color: var(--van-danger-color);
