@@ -108,6 +108,10 @@ export const useCacheStore = defineStore(`__cache__`, {
         ...value,
       })
     },
+    delMonthStatus(month: string | number, day: string | number): void {
+      const old = get(this.monthData, [month, 'status'])
+      Reflect.deleteProperty(old, day)
+    },
     setCalendar(value: string) {
       this.calendar = value
     },

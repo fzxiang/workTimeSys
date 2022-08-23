@@ -370,15 +370,16 @@ const onSubmit = async () => {
   // 删除项目操作
   const day = dayjs(appStore.selectDate)
   const month = day.format('YYYY-MM')
-  // 清空项目
+  // 清空项目时 清除缓存 且不存储摸版
   if (project.length === 0) {
-    cacheStore.delMonthWorking(month, day.date(), project)
+    cacheStore.delMonthWorking(month, day.date())
+    cacheStore.delMonthStatus(month, day.date())
   } else {
     cacheStore.setMonthWorking(month, day.date(), project)
+    cacheStore.setMonthStatus(month, day.date(), { status: 0 })
+    cacheStore.setWorking(project)
   }
-  cacheStore.setMonthStatus(month, day.date(), { status: 0 })
   tips.value = undefined
-  cacheStore.setWorking(project)
   showToast('提交成功')
   isEdit.value = false
 }
