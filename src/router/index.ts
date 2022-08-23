@@ -32,7 +32,7 @@ export const routes = [
     path: '/helper',
     name: 'HelperIndex',
     component: () => import('/@/views/helper/index.vue'),
-    meta: { title: '说明' /*, ignoreAuth: true*/ },
+    meta: { title: '使用帮助' /*, ignoreAuth: true*/ },
   },
   { path: '/:path(.*)', component: () => import('/@/views/NotFound.vue') },
 ]
