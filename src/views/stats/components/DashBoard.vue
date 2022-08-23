@@ -130,7 +130,7 @@ const chartOptions = reactive({
 const cardRef = ref()
 onMounted(() => {
   const rect = useRect(cardRef)
-  chartOptions.grid.padding.bottom = -parseInt(rect.width / 3 + '')
+  chartOptions.grid.padding.bottom = -parseInt(rect.width / 4 + '')
 })
 </script>
 
