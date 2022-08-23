@@ -2,7 +2,7 @@
   <div class="card-content">
     <van-steps direction="vertical" :active="props.active">
       <van-step v-for="item in props.allData" :key="item.day">
-        <div class="flex-wrap" style="margin-bottom: 10px">
+        <div class="flex-wrap" :class="getStatusClass(item.status)" style="margin-bottom: 10px">
           <p>{{ item.day }}</p>
           <p>{{ item.week }}</p>
         </div>
@@ -21,13 +21,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { defineProps } from 'vue'
 
 const props = defineProps(['active', 'allData'])
-
+enum Status {
+  success = 0,
+  error = 1,
+  other = 2,
+}
 const getStatusClass = (status) => {
-  return status === 0 ? 'primary' : 'danger'
+  console.log(status)
+  if (status === Status.success) return 'primary'
+  else if (status === Status.error) return 'danger'
 }
 </script>
 
@@ -53,5 +59,11 @@ const getStatusClass = (status) => {
   margin: var(--van-padding-xs);
   border-radius: var(--van-padding-base);
   overflow: hidden;
+}
+.primary {
+  color: var(--van-primary-color);
+}
+.danger {
+  color: var(--van-danger-color);
 }
 </style>

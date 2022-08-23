@@ -89,7 +89,11 @@ watchEffect(() => {
     series[0].data.splice(0)
     chartOptions.xaxis.categories.splice(0)
     Object.values(workingMap).forEach((item: Working[]) => {
-      series[0].data.push(item.length)
+      let len = 0
+      item.forEach((obj) => {
+        if (obj.w_value > 0) len++
+      })
+      series[0].data.push(len)
       chartOptions.xaxis.categories.push(get(item, [0, 'project_name']))
     })
   }

@@ -2,23 +2,23 @@
   <div class="card" ref="cardRef">
     <h1>填写统计·天</h1>
     <apex-charts type="donut" :options="chartOptions" :series="series" style="text-align: left" />
-    <van-grid :column-num="3" :border="false">
+    <van-grid :column-num="2" :border="false">
       <van-grid-item>
         <template #default>
           <div class="van-grid-num">{{ normal }}</div>
-          <div class="van-grid-detail">正常填写</div>
+          <div class="van-grid-detail">正常</div>
         </template>
       </van-grid-item>
-      <van-grid-item>
-        <template #default>
-          <div class="van-grid-num" :class="unfill > 0 ? 'warning' : ''">{{ unfill }}</div>
-          <div class="van-grid-detail">未填异常</div>
-        </template>
-      </van-grid-item>
+      <!--      <van-grid-item>-->
+      <!--        <template #default>-->
+      <!--          <div class="van-grid-num" :class="unfill > 0 ? 'warning' : ''">{{ unfill }}</div>-->
+      <!--          <div class="van-grid-detail">未填异常</div>-->
+      <!--        </template>-->
+      <!--      </van-grid-item>-->
       <van-grid-item>
         <template #default>
           <div class="van-grid-num" :class="fillError > 0 ? 'error' : ''">{{ fillError }}</div>
-          <div class="van-grid-detail">已填异常</div>
+          <div class="van-grid-detail">异常</div>
         </template>
       </van-grid-item>
     </van-grid>
@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import ApexCharts from 'vue3-apexcharts'
-import { useRect } from '@vant/use';
+import { useRect } from '@vant/use'
 
 const normal = ref(0)
 const unfill = ref(0)
@@ -64,17 +64,18 @@ watchEffect(() => {
       if (item.status === Status.success) {
         normal.value++
       } else if (item.status === Status.error) {
-        const date = dayjs(item.w_date).date()
-        if (working[date]) {
-          fillError.value++
-        } else {
-          unfill.value++
-        }
+        // const date = dayjs(item.w_date).date()
+        fillError.value++
+        // if (working[date]) {
+        //   fillError.value++
+        // } else {
+        //   unfill.value++
+        // }
       }
     })
     normal.value = statusData.filter((item) => item.status === Status.success).length
   }
-  series.value = [normal.value, unfill.value, fillError.value]
+  series.value = [normal.value, /* unfill.value, */ fillError.value]
 })
 
 const cssStyle = getComputedStyle(document.querySelector('body'))
@@ -86,10 +87,10 @@ const chartOptions = reactive({
   },
   colors: [
     cssStyle.getPropertyValue('--van-primary-color'),
-    cssStyle.getPropertyValue('--van-warning-color'),
+    // cssStyle.getPropertyValue('--van-warning-color'),
     cssStyle.getPropertyValue('--van-danger-color'),
   ],
-  labels: ['正常填写', '未填异常', '已填异常'],
+  labels: ['正常', /*'未填异常',*/ '异常'],
   dataLabels: {
     enabled: true,
     formatter: function (val, { seriesIndex }) {

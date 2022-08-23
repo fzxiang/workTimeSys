@@ -90,24 +90,7 @@
               </template>
             </van-swipe-cell>
 
-            <van-skeleton
-              v-if="isEdit && cacheStore.getWorking.length !== 0"
-              :row="1"
-              :row-width="['100%']"
-              round
-              :loading="loading"
-            >
-              <van-button
-                class="van-btn-template"
-                type="primary"
-                size="normal"
-                plain
-                block
-                @click="handleUseTemp"
-              >
-                使用模版
-              </van-button>
-            </van-skeleton>
+            <van-skeleton v-if="isEdit" :row="1" :row-width="['100%']" round :loading="loading" />
           </div>
         </div>
       </div>
@@ -122,6 +105,9 @@
       </template>
       <template #button>
         <div v-show="!isEdit">
+          <van-button round plain type="warning" size="normal" @click="handleReset">
+            一键重置
+          </van-button>
           <van-button round type="success" v-show="!isEdit" @click="isEdit = true">
             修改
           </van-button>
@@ -242,7 +228,13 @@ watch(
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
-    formData.value = []
+    formData.value = [
+      {
+        project_id: 0,
+        project_name: '',
+        w_value: 0,
+      },
+    ]
 
     const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
     // 状态赋值
@@ -271,17 +263,16 @@ watch(
           w_value: parseInt(item.w_value * 100 + ''),
         }
       })
+    } else {
+      if (cacheStore.getWorking.length !== 0) {
+        formData.value = cacheStore.getWorking.map((item) => {
+          return {
+            ...item,
+            w_value: parseInt(item.w_value * 100 + ''),
+          }
+        })
+      }
     }
-    // else {
-    //   if (cacheStore.getWorking.length !== 0) {
-    //     formData.value = cacheStore.getWorking.map((item) => {
-    //       return {
-    //         ...item,
-    //         w_value: parseInt(item.w_value * 100 + ''),
-    //       }
-    //     })
-    //   }
-    // }
     handleLogic()
     const timer = setTimeout(() => {
       loading.value = false
@@ -373,13 +364,13 @@ const onSubmit = async () => {
   // 清空项目时 清除缓存 且不存储摸版
   if (project.length === 0) {
     cacheStore.delMonthWorking(month, day.date())
-    cacheStore.delMonthStatus(month, day.date())
+    cacheStore.setMonthStatus(month, day.date(), { status: 2 })
   } else {
     cacheStore.setMonthWorking(month, day.date(), project)
     cacheStore.setMonthStatus(month, day.date(), { status: 0 })
     cacheStore.setWorking(project)
+    tips.value = undefined
   }
-  tips.value = undefined
   showToast('提交成功')
   isEdit.value = false
 }
@@ -427,20 +418,14 @@ function openDelete() {
 }
 
 // 使用模版
-function handleUseTemp() {
+function handleReset() {
   showConfirmDialog({
     title: '提示',
-    message: '是否使用上一次提交的模版？',
+    message: '是否一键重置工时？',
   })
     .then(() => {
-      if (cacheStore.getWorking.length !== 0) {
-        formData.value = cacheStore.getWorking.map((item) => {
-          return {
-            ...item,
-            w_value: parseInt(item.w_value * 100 + ''),
-          }
-        })
-      }
+      formData.value.splice(0)
+      onSubmit()
     })
     .catch(() => {})
 }
@@ -523,10 +508,5 @@ function handleUseTemp() {
   .van-submit-bar {
     background: var(--van-background);
   }
-}
-
-.van-btn-template {
-  border: none;
-  margin-top: 15px;
 }
 </style>
