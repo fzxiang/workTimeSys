@@ -99,7 +99,7 @@
                 block
                 @click="handleUseTemp"
               >
-                使用摸版
+                使用模版
               </van-button>
             </van-skeleton>
           </div>
@@ -370,7 +370,12 @@ const onSubmit = async () => {
   // 删除项目操作
   const day = dayjs(appStore.selectDate)
   const month = day.format('YYYY-MM')
-  cacheStore.setMonthWorking(month, day.date(), project)
+  // 清空项目
+  if (project.length === 0) {
+    cacheStore.delMonthWorking(month, day.date(), project)
+  } else {
+    cacheStore.setMonthWorking(month, day.date(), project)
+  }
   cacheStore.setMonthStatus(month, day.date(), { status: 0 })
   tips.value = undefined
   cacheStore.setWorking(project)
@@ -420,11 +425,11 @@ function openDelete() {
   })
 }
 
-// 使用摸版
+// 使用模版
 function handleUseTemp() {
   showConfirmDialog({
     title: '提示',
-    message: '是否使用上一次提交的摸版？',
+    message: '是否使用上一次提交的模版？',
   })
     .then(() => {
       if (cacheStore.getWorking.length !== 0) {

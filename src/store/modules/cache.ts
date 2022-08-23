@@ -97,6 +97,10 @@ export const useCacheStore = defineStore(`__cache__`, {
     setMonthWorking(month: string | number, day: string | number, value: any): void {
       set(this.monthData, [month, 'working', day], value)
     },
+    delMonthWorking(month: string | number, day: string | number): void {
+      const working = get(this.monthData, [month, 'working'])
+      Reflect.deleteProperty(working, day)
+    },
     setMonthStatus(month: string | number, day: string | number, value: any): void {
       const old = get(this.monthData, [month, 'status', day])
       set(this.monthData, [month, 'status', day], {

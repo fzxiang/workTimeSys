@@ -1,18 +1,18 @@
 <template>
-  <div class="card">
+  <div class="card" ref="cardRef">
     <h1>填写统计·天</h1>
     <apex-charts type="donut" :options="chartOptions" :series="series" style="text-align: left" />
     <van-grid :column-num="3" :border="false">
       <van-grid-item>
         <template #default>
           <div class="van-grid-num">{{ normal }}</div>
-          <div class="van-grid-detail">正常</div>
+          <div class="van-grid-detail">正常填写</div>
         </template>
       </van-grid-item>
       <van-grid-item>
         <template #default>
           <div class="van-grid-num" :class="unfill > 0 ? 'warning' : ''">{{ unfill }}</div>
-          <div class="van-grid-detail">未填</div>
+          <div class="van-grid-detail">未填异常</div>
         </template>
       </van-grid-item>
       <van-grid-item>
@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import ApexCharts from 'vue3-apexcharts'
+import { useRect } from '@vant/use';
 
 const normal = ref(0)
 const unfill = ref(0)
@@ -79,7 +80,7 @@ watchEffect(() => {
 const cssStyle = getComputedStyle(document.querySelector('body'))
 
 // 图形
-const chartOptions = {
+const chartOptions = reactive({
   chart: {
     type: 'donut',
   },
@@ -88,7 +89,7 @@ const chartOptions = {
     cssStyle.getPropertyValue('--van-warning-color'),
     cssStyle.getPropertyValue('--van-danger-color'),
   ],
-  labels: ['正常', '未填', '已填异常'],
+  labels: ['正常填写', '未填异常', '已填异常'],
   dataLabels: {
     enabled: true,
     formatter: function (val, { seriesIndex }) {
@@ -123,7 +124,14 @@ const chartOptions = {
       },
     },
   ],
-}
+})
+
+// 图形适配宽屏
+const cardRef = ref()
+onMounted(() => {
+  const rect = useRect(cardRef)
+  chartOptions.grid.padding.bottom = -parseInt(rect.width / 3 + '')
+})
 </script>
 
 <style lang="less" scoped>

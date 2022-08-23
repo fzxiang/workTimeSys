@@ -65,18 +65,4 @@ onMounted(() => {
   text-align: center;
   overflow: auto;
 }
-@media screen and (min-width: 820px) {
-  // 适配
-  body {
-    width: 820px;
-    position: relative;
-    margin-left: 50%;
-    transform: translateX(-410px);
-    display: inline-block;
-    .van-submit-bar,
-    .van-popup {
-      width: 820px;
-    }
-  }
-}
 </style>

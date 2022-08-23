@@ -47,6 +47,9 @@ const chartOptions = reactive({
   theme: { mode: appStore.mode },
   chart: {
     type: 'bar',
+    toolbar: {
+      show: false,
+    },
   },
   // colors,
   plotOptions: {
