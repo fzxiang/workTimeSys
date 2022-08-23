@@ -242,7 +242,7 @@ watch(
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
-    formData.value && formData.value.splice(0)
+    formData.value = []
 
     const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
     // 状态赋值
