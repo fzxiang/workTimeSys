@@ -90,7 +90,13 @@
               </template>
             </van-swipe-cell>
 
-            <van-skeleton v-if="isEdit" :row="1" :row-width="['100%']" round :loading="loading">
+            <van-skeleton
+              v-if="isEdit && cacheStore.getWorking.length !== 0"
+              :row="1"
+              :row-width="['100%']"
+              round
+              :loading="loading"
+            >
               <van-button
                 class="van-btn-template"
                 type="primary"
@@ -236,13 +242,7 @@ watch(
     const day = dayjs(val)
     const month = day.format('YYYY-MM')
     const $D = day.date()
-    formData.value = [
-      {
-        project_id: 0,
-        project_name: '',
-        w_value: 0,
-      },
-    ]
+    formData.value && formData.value.splice(0)
 
     const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
     // 状态赋值
