@@ -330,21 +330,6 @@ const onSubmit = async () => {
     showToast('总工时必须等于100%或者0%')
     return true
   }
-  const holiday = getHolidayStatus(appStore.selectDate, cacheStore)
-  if (holiday === '假') {
-    const confirm = await showConfirmDialog({
-      title: '当天为法定节假日，是否提交？',
-    })
-    if (confirm !== 'confirm') return false
-  }
-  if ([6, 0].includes(dayjs(appStore.selectDate).day())) {
-    if (holiday !== '班') {
-      const confirm = await showConfirmDialog({
-        title: '当天为周末节假日，是否提交？',
-      })
-      if (confirm !== 'confirm') return false
-    }
-  }
   const projectSet = new Set()
   const project = formData.value.map((item) => {
     projectSet.add(item.project_id)
@@ -354,6 +339,24 @@ const onSubmit = async () => {
       status: 0,
     }
   })
+  if (project?.length !== 0) {
+    // 修改和新增工时  校验
+    const holiday = getHolidayStatus(appStore.selectDate, cacheStore)
+    if (holiday === '假') {
+      const confirm = await showConfirmDialog({
+        title: '当天为法定节假日，是否提交？',
+      })
+      if (confirm !== 'confirm') return false
+    }
+    if ([6, 0].includes(dayjs(appStore.selectDate).day())) {
+      if (holiday !== '班') {
+        const confirm = await showConfirmDialog({
+          title: '当天为周末节假日，是否提交？',
+        })
+        if (confirm !== 'confirm') return false
+      }
+    }
+  }
   if (project.length !== projectSet.size) {
     showToast('不能填写相同项目')
     return true
