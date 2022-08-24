@@ -35,6 +35,17 @@
       4、点击提交<span class="warning">（节假日情况下有提示弹窗 - 点击确认）</span>
     </p>
     <p class="content notice">注：操作提交后，会记录上一次提交摸版</p>
+    <div class="van-video-box">
+      <video-player
+        class="video-player vjs-big-play-centered"
+        src="258c3ea.mov"
+        crossorigin="anonymous"
+        playsinline
+        controls
+        :volume="0.6"
+        :playback-rates="[0.7, 1.0, 1.5, 2.0]"
+      />
+    </div>
   </div>
 
   <div class="card">
