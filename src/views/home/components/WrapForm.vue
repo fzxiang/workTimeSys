@@ -150,6 +150,7 @@ import { useCacheStore } from '/@/store/modules/cache'
 import { useAppStore } from '/@/store/modules/app'
 import get from 'lodash.get'
 import { useWindowSize } from '@vant/use'
+import { getHolidayStatus } from '/@/views/home/components/common'
 const cacheStore = useCacheStore()
 const appStore = useAppStore()
 
@@ -329,12 +330,21 @@ const onSubmit = async () => {
     showToast('总工时必须等于100%或者0%')
     return true
   }
-  // if ([6, 7].indexOf(dayjs(appStore.selectDate).day())) {
-  //   showConfirmDialog({
-  //     title: '周六日是否'
-  //   })
-  //   console.log(dayjs(appStore.selectDate))
-  // }
+  const holiday = getHolidayStatus(appStore.selectDate, cacheStore)
+  if (holiday === '假') {
+    const confirm = await showConfirmDialog({
+      title: '当天为法定节假日，是否提交？',
+    })
+    if (confirm !== 'confirm') return false
+  }
+  if ([6, 0].includes(dayjs(appStore.selectDate).day())) {
+    if (holiday !== '班') {
+      const confirm = await showConfirmDialog({
+        title: '当天为周末节假日，是否提交？',
+      })
+      if (confirm !== 'confirm') return false
+    }
+  }
   const projectSet = new Set()
   const project = formData.value.map((item) => {
     projectSet.add(item.project_id)

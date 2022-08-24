@@ -20,6 +20,7 @@ const setting = {
   GET_PROJECT_VERSION: () => localStore.get(STORAGE_USER_NAME_KEY) + '_project_version',
   GET_WORKING: () => localStore.get(STORAGE_USER_NAME_KEY) + '_working',
   GET_PROJECT: () => localStore.get(STORAGE_USER_NAME_KEY) + '_project',
+  GET_HOLIDAY: () => localStore.get(STORAGE_USER_NAME_KEY) + '_holiday',
 }
 
 export default setting

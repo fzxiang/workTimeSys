@@ -26,14 +26,14 @@ const checkStorageVersion = async () => {
   const { working_version, project_version } = await getVersionInfo()
 
   // 默认配置过期
-  if (cacheStore.getWorkingVersion) {
+  if (cacheStore.workingVersion) {
     cacheStore.setWorkingVersionExpire(cacheStore.workingVersion < working_version)
   } else {
     cacheStore.setWorkingVersionExpire(true)
   }
 
   // 项目过期
-  if (cacheStore.getProjectVersion) {
+  if (cacheStore.projectVersion) {
     cacheStore.setProjectVersionExpire(cacheStore.projectVersion < project_version)
   } else {
     cacheStore.setProjectVersionExpire(true)
@@ -46,10 +46,11 @@ onMounted(async () => {
 
   // 项目配置 校验版本过期
   if (cacheStore.projectVersionExpire) {
-    const { project, project_version } = await getProjectConfig()
+    const { project, project_version, holiday } = await getProjectConfig()
     cacheStore.setProject(project)
     cacheStore.setProjectVersion(project_version)
     cacheStore.setProjectVersionExpire(false)
+    cacheStore.setHoliday(holiday)
   }
   // 玩家默认配置
   if (cacheStore.workingVersionExpire) {

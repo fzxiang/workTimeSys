@@ -18,9 +18,9 @@
       <template #top-info="scoped">
         <van-badge dot :color="handleStatusColor(scoped)" />
       </template>
-      <!--      <template #bottom-info="scoped">-->
-      <!--        <span>工作日</span>-->
-      <!--      </template>-->
+      <template #bottom-info="{ date }">
+        <span>{{ getHolidayStatus(date, cacheStore) }}</span>
+      </template>
     </van-calendar>
     <van-button class="position-left link-btn" plain type="primary" @click="handleHelper">
       <van-icon name="question-o" size="20px" />
@@ -39,7 +39,7 @@ import { useAppStore } from '/@/store/modules/app'
 import { useRouter } from 'vue-router'
 import { getMonthWorkingHours } from '/@/api/home'
 import get from 'lodash.get'
-
+import { getHolidayStatus } from './common'
 const appStore = useAppStore()
 const cacheStore = useCacheStore()
 const router = useRouter()
@@ -47,7 +47,6 @@ const router = useRouter()
 const calendarRef = ref()
 const today = dayjs()
 const minData = new Date(today.year(), today.month() - 5)
-console.log(minData)
 const calendarClass = ref('calendarClose')
 
 const onMonthShow = async (obj) => {
@@ -145,10 +144,6 @@ function handleHelper() {
 :deep(.van-calendar__day) {
   flex-direction: column;
 }
-:deep(.van-calendar__selected-day) {
-  flex-direction: column;
-  border-radius: 50%;
-}
 
 :deep(.van-calendar__top-info) {
   position: static;
@@ -158,9 +153,16 @@ function handleHelper() {
 }
 :deep(.van-calendar__bottom-info) {
   position: static;
-  margin-top: 4px;
-  height: 12px;
-  line-height: 12px;
+  color: var(--van-gray-7);
+  font-weight: var(--van-font-bold);
+}
+
+:deep(.van-calendar__selected-day) {
+  flex-direction: column;
+  border-radius: 50%;
+  .van-calendar__bottom-info {
+    color: var(--van-gray-2);
+  }
 }
 
 //:deep(.van-calendar__body) {

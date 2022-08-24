@@ -10,7 +10,7 @@ import { useAppStoreWithOut } from './app'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
-const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT } = setting
+const { GET_PROJECT_VERSION, GET_WORKING_VERSION, GET_WORKING, GET_PROJECT, GET_HOLIDAY } = setting
 
 interface Project {
   text: string
@@ -26,6 +26,12 @@ interface Working {
   status?: number
   w_value: number | string
 }
+interface Item {
+  [key: string]: 0 | 1 | 2
+}
+interface Holiday {
+  [key: string]: Item
+}
 interface CacheState {
   workingVersionExpire: boolean
   projectVersionExpire: boolean
@@ -34,6 +40,7 @@ interface CacheState {
   working: Working[]
   workingVersion: number
   projectVersion: number
+  holiday: Holiday
 }
 
 // 即时缓存
@@ -42,12 +49,13 @@ export const useCacheStore = defineStore(`__cache__`, {
     workingVersionExpire: false,
     // 用户填写默认配置
     working: [],
-    workingVersion: 0,
+    workingVersion: +(localStore.get(GET_WORKING_VERSION()) || 0),
     projectVersionExpire: false,
     // 项目配置
     project: [],
-    projectVersion: 0,
+    projectVersion: +(localStore.get(GET_PROJECT_VERSION()) || 0),
     monthData: {},
+    holiday: (localStore.get(GET_HOLIDAY()) || {}) as Holiday,
   }),
   // persist: true,
   getters: {
@@ -73,12 +81,6 @@ export const useCacheStore = defineStore(`__cache__`, {
           text: item.name,
         }
       })
-    },
-    getWorkingVersion() {
-      return this.workingVersion ? this.workingVersion : localStore.get(GET_WORKING_VERSION())
-    },
-    getProjectVersion() {
-      return this.projectVersion ? this.projectVersion : localStore.get(GET_PROJECT_VERSION())
     },
     showFormData() {
       const today = dayjs(new Date())
@@ -136,6 +138,10 @@ export const useCacheStore = defineStore(`__cache__`, {
     },
     setProjectVersionExpire(value: boolean) {
       this.projectVersionExpire = value
+    },
+    setHoliday(value: Holiday) {
+      this.holiday = value
+      localStore.set(GET_HOLIDAY(), value, false)
     },
   },
 })
