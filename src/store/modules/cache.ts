@@ -55,7 +55,7 @@ export const useCacheStore = defineStore(`__cache__`, {
       return this.monthData
     },
     getWorking() {
-      return this.working.length > 0 ? this.working : localStore.get(GET_WORKING())
+      return this.working.length > 0 ? this.working : localStore.get(GET_WORKING()) || []
     },
     getProject() {
       const appStore = useAppStoreWithOut()

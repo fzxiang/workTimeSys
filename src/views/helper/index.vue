@@ -40,7 +40,7 @@
   </div>
 
   <div class="card">
-    <h1>4、如何重置工时？</h1>
+    <h1>4、如何重置（撤销）工时？</h1>
     <p class="content">正在建设中...</p>
   </div>
 </template>

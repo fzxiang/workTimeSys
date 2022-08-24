@@ -89,8 +89,6 @@
                 />
               </template>
             </van-swipe-cell>
-
-            <van-skeleton v-if="isEdit" :row="1" :row-width="['100%']" round :loading="loading" />
           </div>
         </div>
       </div>
@@ -140,6 +138,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import type { PickerConfirmEventParams } from 'vant'
 import { showToast, showConfirmDialog } from 'vant'
 import BScroll from '@better-scroll/core'
@@ -210,7 +209,7 @@ interface FormData {
   project_name: number | string
   w_value: number
 }
-const formData = ref<[FormData]>()
+const formData: Ref<FormData[]> = ref([])
 const showPicker = ref(false)
 const totalTime = ref(100)
 // 编辑和提交状态
@@ -235,7 +234,6 @@ watch(
         w_value: 0,
       },
     ]
-
     const monthStatus = get(cacheStore.getMonthData, [month, 'status'])
     // 状态赋值
     if (monthStatus && monthStatus[$D]) {
